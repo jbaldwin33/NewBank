@@ -19,7 +19,7 @@ namespace GrpcGreeter.Models
     public Guid ID { get; set; }
     public string Name { get; set; }
     public Proficiency Proficiency { get; set; }
-
+    public Guid OwnerID { get; set; }
     public static Protos.Proficiency ConvertFromDbType(Proficiency proficiency)
     {
       return proficiency switch

@@ -4,14 +4,16 @@ using GrpcGreeter;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrpcGreeter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200517033739_User")]
+    partial class User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,9 +50,6 @@ namespace GrpcGreeter.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OwnerID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Proficiency")
                         .HasColumnType("int");
 
@@ -65,9 +64,6 @@ namespace GrpcGreeter.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AccountID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
@@ -77,24 +73,27 @@ namespace GrpcGreeter.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordSalt")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SkillID")
+                    b.Property<Guid?>("SkillID")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("UserType")
-                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
+                    b.HasIndex("SkillID");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GrpcGreeter.Models.UserModel", b =>
+                {
+                    b.HasOne("GrpcGreeter.Models.SkillModel", "Skill")
+                        .WithMany()
+                        .HasForeignKey("SkillID");
                 });
 #pragma warning restore 612, 618
         }

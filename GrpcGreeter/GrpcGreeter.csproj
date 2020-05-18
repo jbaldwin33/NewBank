@@ -8,7 +8,7 @@
     <Protobuf Include="Protos\empty.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\enums.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\skillCRUD.proto" GrpcServices="Server" />
-    <Protobuf Include="Protos\personCRUD.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\userCRUD.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\accountCRUD.proto" GrpcServices="Server" />
   </ItemGroup>
 

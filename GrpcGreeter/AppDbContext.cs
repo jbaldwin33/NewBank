@@ -11,7 +11,7 @@ namespace GrpcGreeter
   {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<PersonModel> Persons { get; set; }
+    public DbSet<UserModel> Users { get; set; }
     public DbSet<SkillModel> Skills { get; set; }
     public DbSet<AccountModel> Accounts { get; set; }
 

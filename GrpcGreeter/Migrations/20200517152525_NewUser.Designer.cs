@@ -4,14 +4,16 @@ using GrpcGreeter;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GrpcGreeter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200517152525_NewUser")]
+    partial class NewUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,10 +82,10 @@ namespace GrpcGreeter.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordSalt")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PasswordSalt")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("SkillID")
+                    b.Property<Guid?>("SkillID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("UserType")
@@ -94,7 +96,16 @@ namespace GrpcGreeter.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("SkillID");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GrpcGreeter.Models.UserModel", b =>
+                {
+                    b.HasOne("GrpcGreeter.Models.SkillModel", "Skill")
+                        .WithMany()
+                        .HasForeignKey("SkillID");
                 });
 #pragma warning restore 612, 618
         }

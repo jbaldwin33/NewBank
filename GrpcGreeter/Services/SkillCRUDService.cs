@@ -24,7 +24,8 @@ namespace GrpcGreeter.Services
       {
         Id = data.ID.ToString(),
         Name = data.Name,
-        Proficiency = SkillModel.ConvertFromDbType(data.Proficiency)
+        Proficiency = SkillModel.ConvertFromDbType(data.Proficiency),
+        OwnerId = data.OwnerID.ToString()
       };
       return Task.FromResult(skill);
 
@@ -38,7 +39,8 @@ namespace GrpcGreeter.Services
                   {
                     Id = s.ID.ToString(),
                     Name = s.Name,
-                    Proficiency = SkillModel.ConvertFromDbType(s.Proficiency)
+                    Proficiency = SkillModel.ConvertFromDbType(s.Proficiency),
+                    OwnerId = s.OwnerID.ToString()
                   };
       skills.Items.AddRange(query.ToArray());
       return Task.FromResult(skills);
@@ -46,14 +48,15 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Insert(Skill request, ServerCallContext context)
     {
-      if (db.Skills.FirstOrDefault(s => s.Name == request.Name) == null)
-        return Task.FromResult(new Empty());
+      if (db.Skills.FirstOrDefault(s => s.Name == request.Name) != null)
+        throw new ArgumentException("Skill already exists");
 
       db.Skills.Add(new SkillModel
       {
         ID = Guid.Parse(request.Id),
         Name = request.Name,
-        Proficiency = SkillModel.ConvertFromProtoType(request.Proficiency)
+        Proficiency = SkillModel.ConvertFromProtoType(request.Proficiency),
+        OwnerID = Guid.Parse(request.OwnerId)
       });
       db.SaveChanges();
       return Task.FromResult(new Empty());
@@ -65,7 +68,8 @@ namespace GrpcGreeter.Services
       {
         ID = Guid.Parse(request.Id),
         Name = request.Name,
-        Proficiency = SkillModel.ConvertFromProtoType(request.Proficiency)
+        Proficiency = SkillModel.ConvertFromProtoType(request.Proficiency),
+        OwnerID = Guid.Parse(request.OwnerId)
       });
       db.SaveChanges();
       return Task.FromResult(new Empty());
