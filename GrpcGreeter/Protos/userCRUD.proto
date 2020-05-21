@@ -1,17 +1,18 @@
 syntax = "proto3";
 
 option csharp_namespace = "GrpcGreeter.Protos";
-import "Protos/empty.proto";
+import "Protos/common.proto";
 
 package protos.userCRUD;
 
 service UserCRUD {
-  rpc GetUsers (empty.Empty) returns (Users);
-  rpc GetByID (UserFilter) returns (User);
+  rpc GetUsers (common.Empty) returns (Users);
+  rpc GetByID (UserFilter) returns (UserResponse);
+  rpc GetByCredential (UserCredential) returns (UserResponse);
   rpc GetByFilter (UserFilter) returns (Users);
-  rpc Insert (User) returns (empty.Empty);
-  rpc Update (User) returns (empty.Empty);
-  rpc Delete (UserFilter) returns (empty.Empty);
+  rpc Insert (User) returns (common.Empty);
+  rpc Update (User) returns (common.Empty);
+  rpc Delete (UserFilter) returns (common.Empty);
 }
 
 message User {
@@ -22,9 +23,8 @@ message User {
   string username = 5;
   string passwordHash = 6;
   string passwordSalt = 7;
-  string skillId = 8;
-  string accountId = 9;
-  UserProtoType userType = 10;
+  string accountId = 8;
+  UserProtoType userType = 9;
 }
 
 enum UserProtoType{
@@ -42,7 +42,15 @@ message UserFilter{
   string lastName = 3;
   int32 age = 4;
   string username = 5;
-  string skillId = 6;
-  string accountId = 7;
-  UserProtoType userType = 8;
+  string accountId = 6;
+  UserProtoType userType = 7;
+}
+
+message UserCredential{
+  string username = 1;
+  string passwordHash = 2;
+}
+
+message UserResponse{
+  User user = 1;
 }

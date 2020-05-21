@@ -11,13 +11,18 @@ namespace GrpcGreeter.Services
   public class AccountCRUDService : AccountCRUD.AccountCRUDBase
   {
     private readonly AppDbContext db;
-    public AccountCRUDService(AppDbContext db)
+    private readonly SessionService sessionService;
+    public AccountCRUDService(AppDbContext db, SessionService sessionService)
     {
       this.db = db;
+      this.sessionService = sessionService;
     }
 
     public override Task<Accounts> GetAccounts(Empty request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       var accounts = new Accounts();
       var query = from a in db.Accounts
                   select new Account
@@ -30,8 +35,11 @@ namespace GrpcGreeter.Services
       return Task.FromResult(accounts);
     }
 
-    public override Task<Account> GetByID(AccountFilter request, ServerCallContext context)
+    public override Task<AccountResponse> GetByID(AccountFilter request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       var data = db.Accounts.FirstOrDefault(a => a.ID == Guid.Parse(request.Id));
       if (data == null)
         throw new ArgumentNullException();
@@ -43,11 +51,14 @@ namespace GrpcGreeter.Services
         AccountType = AccountModel.ConvertFromDbType(data.AccountType),
         UserId = data.UserID.ToString()
       };
-      return Task.FromResult(account);
+      return Task.FromResult(new AccountResponse { Account = account });
     }
 
     public override Task<Empty> Insert(Account request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       db.Accounts.Add(new AccountModel
       {
         ID = Guid.Parse(request.Id),
@@ -61,6 +72,9 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Update(Account request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       db.Accounts.Update(new AccountModel
       {
         ID = Guid.Parse(request.Id),
@@ -74,6 +88,9 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Delete(AccountFilter request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       var account = db.Accounts.FirstOrDefault(a => a.ID == Guid.Parse(request.Id));
       if (account == null)
         throw new ArgumentNullException();

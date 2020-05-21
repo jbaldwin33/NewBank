@@ -1,9 +1,8 @@
-﻿using GrpcGreeter.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GrpcGreeter.Services
+namespace BankServer.Services
 {
   public interface ISessionService
   {

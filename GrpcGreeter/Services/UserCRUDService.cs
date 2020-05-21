@@ -14,13 +14,18 @@ namespace GrpcGreeter.Services
   public class UserCRUDService : UserCRUD.UserCRUDBase
   {
     private readonly AppDbContext db = null;
-    public UserCRUDService(AppDbContext db)
+    private readonly SessionService sessionService;
+    public UserCRUDService(AppDbContext db, SessionService sessionService)
     {
       this.db = db;
+      this.sessionService = sessionService;
     }
 
-    public override Task<User> GetByID(UserFilter request, ServerCallContext context)
+    public override Task<UserResponse> GetByID(UserFilter request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       var data = db.Users.FirstOrDefault(p => p.ID == Guid.Parse(request.Id));
       if (data == null)
         throw new ArgumentNullException();
@@ -34,15 +39,17 @@ namespace GrpcGreeter.Services
         LastName = data.LastName,
         Id = data.ID.ToString(),
         Age = data.Age,
-        SkillId = data.SkillID.ToString(),
         AccountId = data.AccountID.ToString()
       };
-      return Task.FromResult(person);
+      return Task.FromResult(new UserResponse { User = person });
 
     }
 
     public override Task<Users> GetByFilter(UserFilter request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       UserModel[] users = new UserModel[0];
       if (!string.IsNullOrEmpty(request.FirstName))
         users = db.Users.Where(p => p.FirstName == request.FirstName).ToArray();
@@ -66,18 +73,20 @@ namespace GrpcGreeter.Services
         LastName = u.LastName,
         Id = u.ID.ToString(),
         Age = u.Age,
-        SkillId = u.SkillID.ToString(),
         AccountId = u.AccountID.ToString(),
         UserType = UserModel.ConvertToUserProtoType(u.UserType)
       });
 
-      output.Items.AddRange(newUsers);
+      output.Items.AddRange(newUsers.ToArray());
 
       return Task.FromResult(output);
     }
 
     public override Task<Users> GetUsers(Empty request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       var persons = new Users();
       var query = from p in db.Users
                   select new User
@@ -89,7 +98,6 @@ namespace GrpcGreeter.Services
                     LastName = p.LastName,
                     Id = p.ID.ToString(),
                     Age = p.Age,
-                    SkillId = p.SkillID.ToString(),
                     AccountId = p.AccountID.ToString(),
                     UserType = UserModel.ConvertToUserProtoType(p.UserType)
                   };
@@ -99,6 +107,9 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Insert(User request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       db.Users.Add(new UserModel
       {
         Username = request.Username,
@@ -108,7 +119,6 @@ namespace GrpcGreeter.Services
         LastName = request.LastName,
         ID = Guid.Parse(request.Id),
         Age = request.Age,
-        SkillID = Guid.Parse(request.SkillId),
         AccountID = Guid.Parse(request.AccountId),
         UserType = UserModel.ConvertToUserDbType(request.UserType)
       });
@@ -118,6 +128,9 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Update(User request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       db.Users.Update(new UserModel
       {
         Username = request.Username,
@@ -127,7 +140,6 @@ namespace GrpcGreeter.Services
         LastName = request.LastName,
         ID = Guid.Parse(request.Id),
         Age = request.Age,
-        SkillID = Guid.Parse(request.SkillId),
         AccountID = Guid.Parse(request.AccountId),
         UserType = UserModel.ConvertToUserDbType(request.UserType)
       });
@@ -137,6 +149,9 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Delete(UserFilter request, ServerCallContext context)
     {
+      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new InvalidOperationException("Invalid session");
+
       var person = db.Users.FirstOrDefault(p => p.ID == Guid.Parse(request.Id));
       if (person == null)
         throw new ArgumentNullException();

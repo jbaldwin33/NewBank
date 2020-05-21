@@ -37,9 +37,22 @@ namespace GrpcGreeter.Models
       return userDbType switch
       {
         UserDbType.Admin => UserProtoType.Admin,
-        UserDbType.User =>  UserProtoType.User,
+        UserDbType.User => UserProtoType.User,
         _ => throw new NotSupportedException()
       };
     }
+
+    public static User ConvertUser(UserModel userModel) => new User
+    {
+      AccountId = userModel.AccountID.ToString(),
+      Age = userModel.Age,
+      FirstName = userModel.FirstName,
+      Id = userModel.ID.ToString(),
+      LastName = userModel.LastName,
+      PasswordHash = userModel.PasswordHash,
+      PasswordSalt = userModel.PasswordSalt,
+      Username = userModel.Username,
+      UserType = ConvertToUserProtoType(userModel.UserType)
+    };
   }
 }

@@ -1,16 +1,15 @@
-﻿using GrpcGreeter.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GrpcGreeter.Services
+namespace BankServer.Services
 {
   public class SessionService : ISessionService
   {
     private static readonly Lazy<SessionService> instance = new Lazy<SessionService>(() => new SessionService(Guid.NewGuid()));
-    private readonly List<Session> sessionRepository;
-    private Guid ID;
+    private readonly List<Session> sessionRepository = new List<Session>();
+    public Guid ID { get; }
 
     public SessionService(Guid id)
     {

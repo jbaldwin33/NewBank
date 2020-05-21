@@ -2,8 +2,12 @@ syntax = "proto3";
 
 option csharp_namespace = "GrpcGreeter.Protos";
 
-package protos.empty;
+package protos.common;
 
 message Empty{
 
+}
+
+message SessionInput{
+  string sessionId = 1;
 }

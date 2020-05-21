@@ -1,16 +1,17 @@
 syntax = "proto3";
 
 option csharp_namespace = "GrpcGreeter.Protos";
-import "Protos/empty.proto";
+import "Protos/common.proto";
 
 package protos.accountCRUD;
 
 service AccountCRUD {
-  rpc GetAccounts (empty.Empty) returns (Accounts);
-  rpc GetByID (AccountFilter) returns (Account);
-  rpc Insert (Account) returns (empty.Empty);
-  rpc Update (Account) returns (empty.Empty);
-  rpc Delete (AccountFilter) returns (empty.Empty);
+  rpc GetAccounts (common.Empty) returns (Accounts);
+  rpc GetByID (AccountFilter) returns (AccountResponse);
+  rpc GetByUserID (AccountRequest) returns (AccountResponse);
+  rpc Insert (Account) returns (common.Empty);
+  rpc Update (Account) returns (common.Empty);
+  rpc Delete (AccountFilter) returns (common.Empty);
 }
 
 message Account {
@@ -29,6 +30,14 @@ message AccountFilter{
   double balance = 2;
   AccountType accountType = 3;
   string userId = 4;
+}
+
+message AccountRequest{
+  string userId = 1;
+}
+
+message AccountResponse{
+  Account account = 1;
 }
 
 enum AccountType{
