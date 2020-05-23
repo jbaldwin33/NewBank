@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿//using BankServer.Services;
+using Grpc.Core;
 using GrpcGreeter.Models;
 using GrpcGreeter.Protos;
 using System;
@@ -11,11 +12,9 @@ namespace GrpcGreeter.Services
   public class AccountCRUDService : AccountCRUD.AccountCRUDBase
   {
     private readonly AppDbContext db;
-    private readonly SessionService sessionService;
-    public AccountCRUDService(AppDbContext db, SessionService sessionService)
+    public AccountCRUDService(AppDbContext db)
     {
       this.db = db;
-      this.sessionService = sessionService;
     }
 
     public override Task<Accounts> GetAccounts(Empty request, ServerCallContext context)
@@ -52,6 +51,15 @@ namespace GrpcGreeter.Services
         UserId = data.UserID.ToString()
       };
       return Task.FromResult(new AccountResponse { Account = account });
+    }
+
+    public override Task<AccountResponse> GetByUserID(AccountRequest request, ServerCallContext context)
+    {
+      var account = db.Accounts.FirstOrDefault(a => a.UserID == Guid.Parse(request.UserId));
+      if (account == null)
+        throw new ArgumentNullException("No account exists");
+
+      return Task.FromResult(new AccountResponse { Account = AccountModel.ConvertAccount(account) });
     }
 
     public override Task<Empty> Insert(Account request, ServerCallContext context)

@@ -54,5 +54,18 @@ namespace GrpcGreeter.Models
       Username = userModel.Username,
       UserType = ConvertToUserProtoType(userModel.UserType)
     };
+
+    public static UserModel ConvertUser(User userModel) => new UserModel
+    {
+      AccountID = Guid.Parse(userModel.AccountId),
+      Age = userModel.Age,
+      FirstName = userModel.FirstName,
+      ID = Guid.Parse(userModel.Id),
+      LastName = userModel.LastName,
+      PasswordHash = userModel.PasswordHash,
+      PasswordSalt = userModel.PasswordSalt,
+      Username = userModel.Username,
+      UserType = ConvertToUserDbType(userModel.UserType)
+    };
   }
 }

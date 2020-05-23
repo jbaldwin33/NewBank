@@ -39,6 +39,8 @@ namespace GrpcGreeter
         endpoints.MapGrpcService<UserCRUDService>();
         endpoints.MapGrpcService<AccountCRUDService>();
         endpoints.MapGrpcService<AuthenticationService>();
+        endpoints.MapGrpcService<CreationService>();
+        endpoints.MapGrpcService<SessionService>();
 
         endpoints.MapGet("/", async context =>
               {

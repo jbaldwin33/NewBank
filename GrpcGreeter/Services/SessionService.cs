@@ -1,45 +1,67 @@
-﻿using GrpcGreeter.Models;
+﻿using Grpc.Core;
+using GrpcGreeter.Models;
+using GrpcGreeter.Protos;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GrpcGreeter.Services
 {
-  public class SessionService : ISessionService
+  public class SessionService : SessionCRUD.SessionCRUDBase
   {
-    private static readonly Lazy<SessionService> instance = new Lazy<SessionService>(() => new SessionService(Guid.NewGuid()));
-    private readonly List<Session> sessionRepository;
-    private Guid ID;
-
-    public SessionService(Guid id)
+    private readonly AppDbContext db;
+    public SessionService(AppDbContext db)
     {
-      ID = id;
+      this.db = db;
     }
 
-    public static SessionService Instance => instance.Value;
-
-    public void AddSession(Session session)
+    public override Task<Empty> AddSession(SessionRequest request, ServerCallContext context)
     {
-      sessionRepository.Add(session);
+      if (Guid.Parse(request.SessionId) == Guid.Empty)
+        throw new ArgumentNullException(request.SessionId);
+      if (db.Sessions.Any(s => s.ID == Guid.Parse(request.SessionId)))
+        throw new ArgumentException("Session already exists");
+
+      db.Sessions.Add(new SessionModel { ID = Guid.Parse(request.SessionId) });
+      db.SaveChanges();
+      return Task.FromResult(new Empty());
     }
-    public void RemoveSession(Guid sessionID)
+
+    public override Task<Empty> RemoveSession(SessionRequest request, ServerCallContext context)
     {
-      sessionRepository.RemoveAll(s => s.SessionID == sessionID);
+      if (Guid.Parse(request.SessionId) == Guid.Empty)
+        throw new ArgumentNullException(request.SessionId);
+
+      var session = db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId));
+
+      if (session == null)
+        throw new ArgumentException("Session does not exist");
+
+      db.Sessions.Remove(session);
+      db.SaveChanges();
+      return Task.FromResult(new Empty());
+
     }
 
-    public bool IsValidSession(Guid id) => sessionRepository.Any(s => s.SessionID == id);
-
-    public int ActiveSessions() => sessionRepository.Count;
-  }
-
-  public class Session
-  {
-    public Guid SessionID { get; }
-
-    public Session(Guid sessionID)
+    public override Task<Sessions> GetSessions(Empty request, ServerCallContext context)
     {
-      SessionID = sessionID;
+      var sessions = new Sessions();
+      var query = from s in db.Sessions
+                  select new SessionRequest
+                  {
+                    SessionId = s.ID.ToString()
+                  };
+      sessions.Items.AddRange(query.ToArray());
+      return Task.FromResult(sessions);
     }
-  }
+
+    public override Task<ValidSessionResponse> IsValidSession(SessionRequest request, ServerCallContext context)
+    {
+      var exists = db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId)) != null;
+      return Task.FromResult(new ValidSessionResponse { Valid = exists });
+    }
+  } 
 }

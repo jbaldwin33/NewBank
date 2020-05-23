@@ -9,6 +9,8 @@
     <Protobuf Include="Protos\userCRUD.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\accountCRUD.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\authentication.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\creation.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\sessionCRUD.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +29,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BankServer\BankServer.csproj" />
   </ItemGroup>
 
 </Project>

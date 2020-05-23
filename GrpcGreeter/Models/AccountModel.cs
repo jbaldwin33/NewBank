@@ -38,6 +38,22 @@ namespace GrpcGreeter.Models
         _ => throw new NotSupportedException(),
       };
     }
+
+    public static Account ConvertAccount(AccountModel accountModel) => new Account
+    {
+      AccountType = ConvertFromDbType(accountModel.AccountType),
+      Balance = accountModel.Balance,
+      Id = accountModel.ID.ToString(),
+      UserId = accountModel.UserID.ToString()
+    };
+
+    public static AccountModel ConvertAccount(Account account) => new AccountModel
+    {
+      AccountType = ConvertFromProtoType(account.AccountType),
+      Balance = account.Balance,
+      ID = Guid.Parse(account.Id),
+      UserID = Guid.Parse(account.UserId)
+    };
   }
 
 }

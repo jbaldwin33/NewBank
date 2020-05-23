@@ -14,6 +14,7 @@ namespace GrpcGreeter
 
     public DbSet<UserModel> Users { get; set; }
     public DbSet<AccountModel> Accounts { get; set; }
+    public DbSet<SessionModel> Sessions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

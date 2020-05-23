@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿//using BankServer.Services;
+using Grpc.Core;
 using GrpcGreeter.Models;
 using GrpcGreeter.Protos;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +14,14 @@ namespace GrpcGreeter.Services
 {
   public class UserCRUDService : UserCRUD.UserCRUDBase
   {
-    private readonly AppDbContext db = null;
-    private readonly SessionService sessionService;
-    public UserCRUDService(AppDbContext db, SessionService sessionService)
+    private readonly AppDbContext db;
+    public UserCRUDService(AppDbContext db)
     {
       this.db = db;
-      this.sessionService = sessionService;
     }
 
     public override Task<UserResponse> GetByID(UserFilter request, ServerCallContext context)
     {
-      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
-      //  throw new InvalidOperationException("Invalid session");
-
       var data = db.Users.FirstOrDefault(p => p.ID == Guid.Parse(request.Id));
       if (data == null)
         throw new ArgumentNullException();
@@ -47,9 +43,6 @@ namespace GrpcGreeter.Services
 
     public override Task<Users> GetByFilter(UserFilter request, ServerCallContext context)
     {
-      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
-      //  throw new InvalidOperationException("Invalid session");
-
       UserModel[] users = new UserModel[0];
       if (!string.IsNullOrEmpty(request.FirstName))
         users = db.Users.Where(p => p.FirstName == request.FirstName).ToArray();
@@ -84,9 +77,6 @@ namespace GrpcGreeter.Services
 
     public override Task<Users> GetUsers(Empty request, ServerCallContext context)
     {
-      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
-      //  throw new InvalidOperationException("Invalid session");
-
       var persons = new Users();
       var query = from p in db.Users
                   select new User

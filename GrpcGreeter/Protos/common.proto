@@ -7,7 +7,3 @@ package protos.common;
 message Empty{
 
 }
-
-message SessionInput{
-  string sessionId = 1;
-}

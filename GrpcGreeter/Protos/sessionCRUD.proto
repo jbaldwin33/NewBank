@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcGreeter.Protos";
+import "Protos/common.proto";
+
+package protos.sessionCRUD;
+
+service SessionCRUD {
+  rpc AddSession (SessionRequest) returns (common.Empty);
+  rpc RemoveSession (SessionRequest) returns (common.Empty);
+  rpc IsValidSession (SessionRequest) returns (ValidSessionResponse);
+  rpc GetSessions (common.Empty) returns (Sessions);
+}
+
+message SessionRequest {
+  string sessionId = 1;
+}
+
+message ValidSessionResponse {
+  bool valid = 1;
+}
+
+message Sessions {
+  repeated SessionRequest items = 1;
+}

@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿//using BankServer.Services;
+using Grpc.Core;
 using GrpcGreeter.Models;
 using GrpcGreeter.Protos;
 using System;
@@ -11,11 +12,11 @@ namespace GrpcGreeter.Services
   public class AuthenticationService : Authentication.AuthenticationBase
   {
     private readonly AppDbContext db;
-    private readonly SessionService sessionService;
-    public AuthenticationService(AppDbContext db, SessionService sessionService)
+    //private readonly BankServer.Services.SessionService sessionService;
+    public AuthenticationService(AppDbContext db/*, BankServer.Services.SessionService sessionService*/)
     {
       this.db = db;
-      this.sessionService = sessionService;
+      //this.sessionService = sessionService;
     }
 
     public override Task<LoginResponse> Login(LoginRequest request, ServerCallContext context)
@@ -30,8 +31,8 @@ namespace GrpcGreeter.Services
         throw new ArgumentOutOfRangeException("No user exists");
 
       var sessionID = Guid.NewGuid();
-      sessionService.AddSession(new Session(sessionID));
-      Console.WriteLine($"Number of active sessions : {sessionService.ActiveSessions()}");
+      //sessionService.AddSession(new BankServer.Services.Session(sessionID));
+      //Console.WriteLine($"Number of active sessions : {sessionService.ActiveSessions()}");
 
       return Task.FromResult(new LoginResponse { SessionID = sessionID.ToString(), User = UserModel.ConvertUser(user) });
     }
@@ -40,11 +41,11 @@ namespace GrpcGreeter.Services
     {
       if (string.IsNullOrEmpty(request.SessionId))
         throw new ArgumentNullException(nameof(request.SessionId));
-      if (sessionService.IsValidSession(Guid.Parse(request.SessionId)))
-        throw new ArgumentOutOfRangeException("Session does not exist");
+      //if (sessionService.IsValidSession(Guid.Parse(request.SessionId)))
+      //  throw new ArgumentOutOfRangeException("Session does not exist");
 
-      sessionService.RemoveSession(Guid.Parse(request.SessionId));
-      Console.WriteLine($"Number of active sessions : {sessionService.ActiveSessions()}");
+      //sessionService.RemoveSession(Guid.Parse(request.SessionId));
+      //Console.WriteLine($"Number of active sessions : {sessionService.ActiveSessions()}");
 
       return Task.FromResult(new LogoutResponse());
     }
