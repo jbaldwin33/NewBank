@@ -10,7 +10,10 @@ namespace GrpcGreeter
 {
   public class AppDbContext : DbContext
   {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+    {
+      var c = 1;
+    }
 
     public DbSet<UserModel> Users { get; set; }
     public DbSet<AccountModel> Accounts { get; set; }
@@ -18,7 +21,7 @@ namespace GrpcGreeter
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-      //optionsBuilder.UseSqlServer(@"Data Source=.\SQLEXPRESS;initial catalog=NewBank;Trusted_Connection=true;");
+      optionsBuilder.UseSqlServer(@"Data Source=.\SQLEXPRESS;initial catalog=NewBank;Trusted_Connection=true;");
     }
   }
 }

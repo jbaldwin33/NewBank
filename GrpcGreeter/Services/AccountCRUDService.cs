@@ -103,7 +103,7 @@ namespace GrpcGreeter.Services
       if (account == null)
         throw new RpcException(new Status(StatusCode.NotFound, "Account not found"));
 
-      account.Balance = request.Amount;
+      account.Balance += request.Amount;
       db.Accounts.Attach(account);
       db.Entry(account).Property(a => a.Balance).IsModified = true;
       db.SaveChanges();
@@ -120,7 +120,7 @@ namespace GrpcGreeter.Services
       if (account == null)
         throw new RpcException(new Status(StatusCode.NotFound, "Account not found"));
 
-      account.Balance = request.Amount;
+      account.Balance -= request.Amount;
       db.Accounts.Attach(account);
       db.Entry(account).Property(a => a.Balance).IsModified = true;
       db.SaveChanges();
@@ -130,7 +130,15 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Transfer(TransferRequest request, ServerCallContext context)
     {
-      return base.Transfer(request, context);
+      var toUser = db.Users.FirstOrDefault(u => u.Username == request.Username);
+      if (toUser == null)
+        throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
+
+      var toAccount = db.Accounts.First(a => a.UserID == toUser.ID);
+      toAccount.Balance += request.Amount;
+      db.SaveChanges();
+
+      return Task.FromResult(new Empty());
     }
   }
 }

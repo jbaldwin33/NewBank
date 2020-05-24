@@ -55,7 +55,7 @@ message WithdrawRequest{
 
 message TransferRequest{
   double amount = 1;
-  string accountId = 2;
+  string username = 2;
 }
 
 enum AccountType{
