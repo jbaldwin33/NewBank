@@ -10,10 +10,12 @@ service SessionCRUD {
   rpc RemoveSession (SessionRequest) returns (common.Empty);
   rpc IsValidSession (SessionRequest) returns (ValidSessionResponse);
   rpc GetSessions (common.Empty) returns (Sessions);
+  rpc ClearSessions (common.Empty) returns (common.Empty);
 }
 
 message SessionRequest {
   string sessionId = 1;
+  string username = 2;
 }
 
 message ValidSessionResponse {

@@ -18,7 +18,7 @@ namespace GrpcGreeter
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-      optionsBuilder.UseSqlServer(@"Data Source=.\SQLEXPRESS;initial catalog=NewBank;Trusted_Connection=true;");
+      //optionsBuilder.UseSqlServer(@"Data Source=.\SQLEXPRESS;initial catalog=NewBank;Trusted_Connection=true;");
     }
   }
 }

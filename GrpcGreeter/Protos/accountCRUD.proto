@@ -12,6 +12,9 @@ service AccountCRUD {
   rpc Insert (Account) returns (common.Empty);
   rpc Update (Account) returns (common.Empty);
   rpc Delete (AccountFilter) returns (common.Empty);
+  rpc Deposit (DepositRequest) returns (common.Empty);
+  rpc Withdraw (WithdrawRequest) returns (common.Empty);
+  rpc Transfer (TransferRequest) returns (common.Empty);
 }
 
 message Account {
@@ -38,6 +41,21 @@ message AccountRequest{
 
 message AccountResponse{
   Account account = 1;
+}
+
+message DepositRequest{
+  double amount = 1;
+  string accountId = 2;
+}
+
+message WithdrawRequest{
+  double amount = 1;
+  string accountId = 2;
+}
+
+message TransferRequest{
+  double amount = 1;
+  string accountId = 2;
 }
 
 enum AccountType{

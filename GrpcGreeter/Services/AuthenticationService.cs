@@ -1,5 +1,4 @@
-﻿//using BankServer.Services;
-using Grpc.Core;
+﻿using Grpc.Core;
 using GrpcGreeter.Models;
 using GrpcGreeter.Protos;
 using System;
@@ -12,27 +11,30 @@ namespace GrpcGreeter.Services
   public class AuthenticationService : Authentication.AuthenticationBase
   {
     private readonly AppDbContext db;
-    //private readonly BankServer.Services.SessionService sessionService;
-    public AuthenticationService(AppDbContext db/*, BankServer.Services.SessionService sessionService*/)
+    public AuthenticationService(AppDbContext db)
     {
       this.db = db;
-      //this.sessionService = sessionService;
     }
 
     public override Task<LoginResponse> Login(LoginRequest request, ServerCallContext context)
     {
       if (string.IsNullOrEmpty(request.Username))
-        throw new ArgumentNullException(nameof(request.Username));
+        throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request.Username)));
       if (string.IsNullOrEmpty(request.PasswordHash))
-        throw new ArgumentNullException(nameof(request.PasswordHash));
+        throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request.PasswordHash)));
 
       var user = db.Users.FirstOrDefault(u => u.Username == request.Username && u.PasswordHash == request.PasswordHash);
       if (user == null)
-        throw new ArgumentOutOfRangeException("No user exists");
+        throw new RpcException(new Status(StatusCode.NotFound, "No user exists"));
+
+      var userSession = db.Sessions.FirstOrDefault(s => s.Username == request.Username);
+      if (userSession != null)
+        db.Sessions.Remove(userSession);
 
       var sessionID = Guid.NewGuid();
-      //sessionService.AddSession(new BankServer.Services.Session(sessionID));
-      //Console.WriteLine($"Number of active sessions : {sessionService.ActiveSessions()}");
+      db.Sessions.Add(new SessionModel { ID = sessionID });
+      db.SaveChanges();
+      Console.WriteLine($"Number of active sessions : {db.Sessions.Count()}");
 
       return Task.FromResult(new LoginResponse { SessionID = sessionID.ToString(), User = UserModel.ConvertUser(user) });
     }
@@ -40,12 +42,14 @@ namespace GrpcGreeter.Services
     public override Task<LogoutResponse> Logout(LogoutRequest request, ServerCallContext context)
     {
       if (string.IsNullOrEmpty(request.SessionId))
-        throw new ArgumentNullException(nameof(request.SessionId));
-      //if (sessionService.IsValidSession(Guid.Parse(request.SessionId)))
-      //  throw new ArgumentOutOfRangeException("Session does not exist");
+        throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request.SessionId)));
+      var session = db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId));
+      if (session == null)
+        throw new RpcException(new Status(StatusCode.NotFound, "Session does not exist"));
 
-      //sessionService.RemoveSession(Guid.Parse(request.SessionId));
-      //Console.WriteLine($"Number of active sessions : {sessionService.ActiveSessions()}");
+      db.Sessions.Remove(session);
+      db.SaveChanges();
+      Console.WriteLine($"Number of active sessions : {db.Sessions.Count()}");
 
       return Task.FromResult(new LogoutResponse());
     }

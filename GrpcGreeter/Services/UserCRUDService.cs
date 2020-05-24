@@ -24,7 +24,7 @@ namespace GrpcGreeter.Services
     {
       var data = db.Users.FirstOrDefault(p => p.ID == Guid.Parse(request.Id));
       if (data == null)
-        throw new ArgumentNullException();
+        throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
 
       var person = new User
       {
@@ -54,7 +54,7 @@ namespace GrpcGreeter.Services
         users = db.Users.Where(p => p.Age == request.Age).ToArray();
 
       if (users.Length == 0)
-        throw new ArgumentNullException();
+        throw new RpcException(new Status(StatusCode.InvalidArgument, "User not found"));
       
       var output = new Users();
       var newUsers = users.Select(u => new User
@@ -97,9 +97,6 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Insert(User request, ServerCallContext context)
     {
-      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
-      //  throw new InvalidOperationException("Invalid session");
-
       db.Users.Add(new UserModel
       {
         Username = request.Username,
@@ -118,9 +115,6 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Update(User request, ServerCallContext context)
     {
-      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
-      //  throw new InvalidOperationException("Invalid session");
-
       db.Users.Update(new UserModel
       {
         Username = request.Username,
@@ -139,12 +133,9 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Delete(UserFilter request, ServerCallContext context)
     {
-      //if (!sessionService.IsValidSession(Guid.Parse(request.SessionId)))
-      //  throw new InvalidOperationException("Invalid session");
-
       var person = db.Users.FirstOrDefault(p => p.ID == Guid.Parse(request.Id));
       if (person == null)
-        throw new ArgumentNullException();
+        throw new RpcException(new Status(StatusCode.InvalidArgument, "User not found"));
 
       db.Users.Remove(person);
       db.SaveChanges();

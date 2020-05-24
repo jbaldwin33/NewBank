@@ -8,5 +8,6 @@ namespace GrpcGreeter.Models
   public class SessionModel
   {
     public Guid ID { get; set; }
+    public string Username { get; set; }
   }
 }
