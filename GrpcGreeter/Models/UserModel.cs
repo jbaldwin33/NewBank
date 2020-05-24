@@ -8,7 +8,11 @@ using System.Threading.Tasks;
 
 namespace GrpcGreeter.Models
 {
-  public enum UserDbType { User, Admin }
+  public enum UserDbEnum 
+  {
+    User, 
+    Admin 
+  }
   public class UserModel
   {
     public Guid ID { get; set; }
@@ -20,24 +24,24 @@ namespace GrpcGreeter.Models
     public string PasswordSalt { get; set; }
     public Guid SkillID { get; set; }
     public Guid AccountID { get; set; }
-    public UserDbType UserType { get; set; }
+    public UserDbEnum UserType { get; set; }
 
-    public static UserDbType ConvertToUserDbType(UserProtoType userProtoType)
+    public static UserDbEnum ConvertUserType(UserProtoEnum userProtoType)
     {
       return userProtoType switch
       {
-        UserProtoType.Admin => UserDbType.Admin,
-        UserProtoType.User => UserDbType.User,
+        UserProtoEnum.Admin => UserDbEnum.Admin,
+        UserProtoEnum.User => UserDbEnum.User,
         _ => throw new NotSupportedException()
       };
     }
 
-    public static UserProtoType ConvertToUserProtoType(UserDbType userDbType)
+    public static UserProtoEnum ConvertUserType(UserDbEnum userDbType)
     {
       return userDbType switch
       {
-        UserDbType.Admin => UserProtoType.Admin,
-        UserDbType.User => UserProtoType.User,
+        UserDbEnum.Admin => UserProtoEnum.Admin,
+        UserDbEnum.User => UserProtoEnum.User,
         _ => throw new NotSupportedException()
       };
     }
@@ -52,7 +56,7 @@ namespace GrpcGreeter.Models
       PasswordHash = userModel.PasswordHash,
       PasswordSalt = userModel.PasswordSalt,
       Username = userModel.Username,
-      UserType = ConvertToUserProtoType(userModel.UserType)
+      UserType = ConvertUserType(userModel.UserType)
     };
 
     public static UserModel ConvertUser(User userModel) => new UserModel
@@ -65,7 +69,7 @@ namespace GrpcGreeter.Models
       PasswordHash = userModel.PasswordHash,
       PasswordSalt = userModel.PasswordSalt,
       Username = userModel.Username,
-      UserType = ConvertToUserDbType(userModel.UserType)
+      UserType = ConvertUserType(userModel.UserType)
     };
   }
 }

@@ -24,10 +24,10 @@ message User {
   string passwordHash = 6;
   string passwordSalt = 7;
   string accountId = 8;
-  UserProtoType userType = 9;
+  UserProtoEnum userType = 9;
 }
 
-enum UserProtoType{
+enum UserProtoEnum {
   USER = 0;
   ADMIN = 1;
 }
@@ -43,7 +43,7 @@ message UserFilter{
   int32 age = 4;
   string username = 5;
   string accountId = 6;
-  UserProtoType userType = 7;
+  UserProtoEnum userType = 7;
 }
 
 message UserCredential{

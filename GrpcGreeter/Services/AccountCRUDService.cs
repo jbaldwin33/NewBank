@@ -21,13 +21,8 @@ namespace GrpcGreeter.Services
     public override Task<Accounts> GetAccounts(Empty request, ServerCallContext context)
     {
       var accounts = new Accounts();
-      var query = from a in db.Accounts
-                  select new Account
-                  {
-                    Id = a.ID.ToString(),
-                    Balance = a.Balance,
-                    AccountType = AccountModel.ConvertFromDbType(a.AccountType)
-                  };
+      var query = from a in db.Accounts 
+                  select AccountModel.ConvertAccount(a);
       accounts.Items.AddRange(query.ToArray());
       return Task.FromResult(accounts);
     }
@@ -38,14 +33,7 @@ namespace GrpcGreeter.Services
       if (data == null)
         throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
 
-      var account = new Account
-      {
-        Id = data.ID.ToString(),
-        Balance = data.Balance,
-        AccountType = AccountModel.ConvertFromDbType(data.AccountType),
-        UserId = data.UserID.ToString()
-      };
-      return Task.FromResult(new AccountResponse { Account = account });
+      return Task.FromResult(new AccountResponse { Account = AccountModel.ConvertAccount(data) });
     }
 
     public override Task<AccountResponse> GetByUserID(AccountRequest request, ServerCallContext context)
@@ -59,26 +47,14 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Insert(Account request, ServerCallContext context)
     {
-      db.Accounts.Add(new AccountModel
-      {
-        ID = Guid.Parse(request.Id),
-        Balance = request.Balance,
-        AccountType = AccountModel.ConvertFromProtoType(request.AccountType),
-        UserID = Guid.Parse(request.UserId)
-      });
+      db.Accounts.Add(AccountModel.ConvertAccount(request));
       db.SaveChanges();
       return Task.FromResult(new Empty());
     }
 
     public override Task<Empty> Update(Account request, ServerCallContext context)
     {
-      db.Accounts.Update(new AccountModel
-      {
-        ID = Guid.Parse(request.Id),
-        Balance = request.Balance,
-        AccountType = AccountModel.ConvertFromProtoType(request.AccountType),
-        UserID = Guid.Parse(request.UserId)
-      });
+      db.Accounts.Update(AccountModel.ConvertAccount(request));
       db.SaveChanges();
       return Task.FromResult(new Empty());
     }
@@ -106,6 +82,8 @@ namespace GrpcGreeter.Services
       account.Balance += request.Amount;
       db.Accounts.Attach(account);
       db.Entry(account).Property(a => a.Balance).IsModified = true;
+
+      db.Transactions.Add(TransactionModel.CreateDepositTransaction(request, account));
       db.SaveChanges();
 
       return Task.FromResult(new Empty());
@@ -123,6 +101,8 @@ namespace GrpcGreeter.Services
       account.Balance -= request.Amount;
       db.Accounts.Attach(account);
       db.Entry(account).Property(a => a.Balance).IsModified = true;
+
+      db.Transactions.Add(TransactionModel.CreateWithdrawTransaction(request, account));
       db.SaveChanges();
 
       return Task.FromResult(new Empty());
@@ -130,12 +110,30 @@ namespace GrpcGreeter.Services
 
     public override Task<Empty> Transfer(TransferRequest request, ServerCallContext context)
     {
-      var toUser = db.Users.FirstOrDefault(u => u.Username == request.Username);
-      if (toUser == null)
-        throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
+      var toUser = db.Users.FirstOrDefault(u => u.Username == request.ToUsername);
+      var fromUser = db.Users.FirstOrDefault(u => u.Username == request.FromUsername);
+      var toAccount = db.Accounts.FirstOrDefault(a => a.UserID == toUser.ID);
+      var fromAccount = db.Accounts.FirstOrDefault(a => a.UserID == fromUser.ID);
 
-      var toAccount = db.Accounts.First(a => a.UserID == toUser.ID);
+      if (toUser == null)
+        throw new RpcException(new Status(StatusCode.NotFound, $"User {toUser.Username} not found"));
+      if (fromUser == null)
+        throw new RpcException(new Status(StatusCode.NotFound, $"User {fromUser.Username} not found"));
+      if (toAccount == null)
+        throw new RpcException(new Status(StatusCode.NotFound, $"Account for user {toUser.Username} not found"));
+      if (fromAccount == null)
+        throw new RpcException(new Status(StatusCode.NotFound, $"Account for user {fromUser.Username} not found"));
+
       toAccount.Balance += request.Amount;
+      db.Accounts.Attach(toAccount);
+      db.Entry(toAccount).Property(a => a.Balance).IsModified = true;
+
+      fromAccount.Balance -= request.Amount;
+      db.Accounts.Attach(fromAccount);
+      db.Entry(fromAccount).Property(a => a.Balance).IsModified = true;
+
+      db.Transactions.Add(TransactionModel.CreateTransferToTransaction(request, toUser));
+      db.Transactions.Add(TransactionModel.CreateTransferFromTransaction(request, fromUser));
       db.SaveChanges();
 
       return Task.FromResult(new Empty());

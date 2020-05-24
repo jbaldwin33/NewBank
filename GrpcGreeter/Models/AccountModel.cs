@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GrpcGreeter.Models
 {
-  public enum AccountType
+  public enum AccountDbEnum
   {
     Checking,
     Saving
@@ -16,32 +16,32 @@ namespace GrpcGreeter.Models
   {
     public Guid ID { get; set; }
     public double Balance { get; set; }
-    public AccountType AccountType { get; set; }
+    public AccountDbEnum AccountType { get; set; }
     public Guid UserID { get; set; }
 
-    public static AccountType ConvertFromProtoType(Protos.AccountType accountType)
+    public static AccountDbEnum ConvertAccountType(AccountProtoEnum accountType)
     {
       return accountType switch
       {
-        Protos.AccountType.Checking => AccountType.Checking,
-        Protos.AccountType.Saving => AccountType.Saving,
+        AccountProtoEnum.Checking => AccountDbEnum.Checking,
+        AccountProtoEnum.Saving => AccountDbEnum.Saving,
         _ => throw new NotSupportedException(),
       };
     }
 
-    public static Protos.AccountType ConvertFromDbType(AccountType accountType)
+    public static AccountProtoEnum ConvertAccountType(AccountDbEnum accountType)
     {
       return accountType switch
       {
-        AccountType.Checking => Protos.AccountType.Checking,
-        AccountType.Saving =>   Protos.AccountType.Saving,
+        AccountDbEnum.Checking => AccountProtoEnum.Checking,
+        AccountDbEnum.Saving => AccountProtoEnum.Saving,
         _ => throw new NotSupportedException(),
       };
     }
 
     public static Account ConvertAccount(AccountModel accountModel) => new Account
     {
-      AccountType = ConvertFromDbType(accountModel.AccountType),
+      AccountType = ConvertAccountType(accountModel.AccountType),
       Balance = accountModel.Balance,
       Id = accountModel.ID.ToString(),
       UserId = accountModel.UserID.ToString()
@@ -49,7 +49,7 @@ namespace GrpcGreeter.Models
 
     public static AccountModel ConvertAccount(Account account) => new AccountModel
     {
-      AccountType = ConvertFromProtoType(account.AccountType),
+      AccountType = ConvertAccountType(account.AccountType),
       Balance = account.Balance,
       ID = Guid.Parse(account.Id),
       UserID = Guid.Parse(account.UserId)

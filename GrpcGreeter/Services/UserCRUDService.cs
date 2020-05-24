@@ -26,19 +26,7 @@ namespace GrpcGreeter.Services
       if (data == null)
         throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
 
-      var person = new User
-      {
-        Username = data.Username,
-        PasswordHash = data.PasswordHash,
-        PasswordSalt = data.PasswordSalt,
-        FirstName = data.FirstName,
-        LastName = data.LastName,
-        Id = data.ID.ToString(),
-        Age = data.Age,
-        AccountId = data.AccountID.ToString()
-      };
-      return Task.FromResult(new UserResponse { User = person });
-
+      return Task.FromResult(new UserResponse { User = UserModel.ConvertUser(data) });
     }
 
     public override Task<Users> GetByFilter(UserFilter request, ServerCallContext context)
@@ -57,18 +45,7 @@ namespace GrpcGreeter.Services
         throw new RpcException(new Status(StatusCode.InvalidArgument, "User not found"));
       
       var output = new Users();
-      var newUsers = users.Select(u => new User
-      {
-        Username = u.Username,
-        PasswordHash = u.PasswordHash,
-        PasswordSalt = u.PasswordSalt,
-        FirstName = u.FirstName,
-        LastName = u.LastName,
-        Id = u.ID.ToString(),
-        Age = u.Age,
-        AccountId = u.AccountID.ToString(),
-        UserType = UserModel.ConvertToUserProtoType(u.UserType)
-      });
+      var newUsers = users.Select(u => UserModel.ConvertUser(u));
 
       output.Items.AddRange(newUsers.ToArray());
 
@@ -79,54 +56,21 @@ namespace GrpcGreeter.Services
     {
       var persons = new Users();
       var query = from p in db.Users
-                  select new User
-                  {
-                    Username = p.Username,
-                    PasswordHash = p.PasswordHash,
-                    PasswordSalt = p.PasswordSalt,
-                    FirstName = p.FirstName,
-                    LastName = p.LastName,
-                    Id = p.ID.ToString(),
-                    Age = p.Age,
-                    AccountId = p.AccountID.ToString(),
-                    UserType = UserModel.ConvertToUserProtoType(p.UserType)
-                  };
+                  select UserModel.ConvertUser(p);
       persons.Items.AddRange(query.ToArray());
       return Task.FromResult(persons);
     }
 
     public override Task<Empty> Insert(User request, ServerCallContext context)
     {
-      db.Users.Add(new UserModel
-      {
-        Username = request.Username,
-        PasswordHash = request.PasswordHash,
-        PasswordSalt = request.PasswordSalt,
-        FirstName = request.FirstName,
-        LastName = request.LastName,
-        ID = Guid.Parse(request.Id),
-        Age = request.Age,
-        AccountID = Guid.Parse(request.AccountId),
-        UserType = UserModel.ConvertToUserDbType(request.UserType)
-      });
+      db.Users.Add(UserModel.ConvertUser(request));
       db.SaveChanges();
       return Task.FromResult(new Empty());
     }
 
     public override Task<Empty> Update(User request, ServerCallContext context)
     {
-      db.Users.Update(new UserModel
-      {
-        Username = request.Username,
-        PasswordHash = request.PasswordHash,
-        PasswordSalt = request.PasswordSalt,
-        FirstName = request.FirstName,
-        LastName = request.LastName,
-        ID = Guid.Parse(request.Id),
-        Age = request.Age,
-        AccountID = Guid.Parse(request.AccountId),
-        UserType = UserModel.ConvertToUserDbType(request.UserType)
-      });
+      db.Users.Update(UserModel.ConvertUser(request));
       db.SaveChanges();
       return Task.FromResult(new Empty());
     }

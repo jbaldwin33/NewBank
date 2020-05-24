@@ -20,7 +20,7 @@ service AccountCRUD {
 message Account {
   string id = 1;
   double balance = 2;
-  AccountType accountType = 3;
+  AccountProtoEnum accountType = 3;
   string userId = 4;
 }
 
@@ -31,7 +31,7 @@ message Accounts{
 message AccountFilter{
   string id = 1;
   double balance = 2;
-  AccountType accountType = 3;
+  AccountProtoEnum accountType = 3;
   string userId = 4;
 }
 
@@ -55,10 +55,11 @@ message WithdrawRequest{
 
 message TransferRequest{
   double amount = 1;
-  string username = 2;
+  string toUsername = 2;
+  string fromUsername = 3;
 }
 
-enum AccountType{
+enum AccountProtoEnum {
   CHECKING = 0;
   SAVING = 1;
 }

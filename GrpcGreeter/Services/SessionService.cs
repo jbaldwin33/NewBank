@@ -25,7 +25,7 @@ namespace GrpcGreeter.Services
       if (db.Sessions.Any(s => s.ID == Guid.Parse(request.SessionId)))
         throw new RpcException(new Status(StatusCode.AlreadyExists, "Session already exists"));
 
-      db.Sessions.Add(new SessionModel { ID = Guid.Parse(request.SessionId), Username = request.Username });
+      db.Sessions.Add(SessionModel.ConvertSession(request));
       db.SaveChanges();
       return Task.FromResult(new Empty());
     }
@@ -50,11 +50,7 @@ namespace GrpcGreeter.Services
     {
       var sessions = new Sessions();
       var query = from s in db.Sessions
-                  select new SessionRequest
-                  {
-                    SessionId = s.ID.ToString(),
-                    Username = s.Username
-                  };
+                  select SessionModel.ConvertSession(s);
       sessions.Items.AddRange(query.ToArray());
       return Task.FromResult(sessions);
     }
