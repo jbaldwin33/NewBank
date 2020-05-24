@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GrpcGreeter.Protos;
 using GrpcGreeter.Services;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,8 +18,22 @@ namespace GrpcGreeter
   {
     // This method gets called by the runtime. Use this method to add services to the container.
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+
+    private readonly bool isDevelopment;
+
+    public Startup(IWebHostEnvironment env)
+    {
+      isDevelopment = env.IsDevelopment();
+    }
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+        .AddCertificate(options =>
+        {
+          if (isDevelopment)
+            options.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck;
+        });
+      services.AddAuthorization();
       services.AddGrpc();
 
       services.AddDbContext<AppDbContext>(options => options.UseSqlServer("data source=.\\SQLEXPRESS; initial catalog=NewBank;integrated security=true"));
@@ -27,12 +42,14 @@ namespace GrpcGreeter
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-      if (env.IsDevelopment())
+      if (isDevelopment)
       {
         app.UseDeveloperExceptionPage();
       }
 
       app.UseRouting();
+      app.UseAuthentication();
+      app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
       {
