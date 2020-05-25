@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+option csharp_namespace = "NewBankServer.Protos";
+import "Protos/common.proto";
+
+package protos.userCRUD;
+
+service UserCRUD {
+  rpc GetUsers (common.Empty) returns (Users);
+  rpc GetByID (UserFilter) returns (UserResponse);
+  rpc GetByCredential (UserCredential) returns (UserResponse);
+  rpc GetByFilter (UserFilter) returns (Users);
+  rpc Insert (User) returns (common.Empty);
+  rpc Update (User) returns (common.Empty);
+  rpc Delete (UserFilter) returns (common.Empty);
+}
+
+message User {
+  string firstName = 1;
+  string lastName = 2;
+  string id = 3;
+  int32 age = 4;
+  string username = 5;
+  string passwordHash = 6;
+  string passwordSalt = 7;
+  string accountId = 8;
+  UserProtoEnum userType = 9;
+}
+
+enum UserProtoEnum {
+  USER = 0;
+  ADMIN = 1;
+}
+
+message Users {
+  repeated User items = 1;
+}
+
+message UserFilter{
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  int32 age = 4;
+  string username = 5;
+  string accountId = 6;
+  UserProtoEnum userType = 7;
+}
+
+message UserCredential{
+  string username = 1;
+  string passwordHash = 2;
+}
+
+message UserResponse{
+  User user = 1;
+}

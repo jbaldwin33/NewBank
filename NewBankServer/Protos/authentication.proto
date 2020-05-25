@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option csharp_namespace = "NewBankServer.Protos";
+import "Protos/userCRUD.proto";
+
+package protos.login;
+
+service Authentication {
+  rpc Login (LoginRequest) returns (LoginResponse);
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
+}
+
+message LoginRequest{
+  string username = 1;
+  string passwordHash = 2;
+}
+
+message LoginResponse{
+  string sessionID = 1;
+  userCRUD.User user = 2;
+}
+
+message LogoutRequest{
+  string sessionId = 1;
+  userCRUD.User user = 2;
+}
+
+message LogoutResponse{
+
+}

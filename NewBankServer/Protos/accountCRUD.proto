@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+option csharp_namespace = "NewBankServer.Protos";
+import "Protos/common.proto";
+
+package protos.accountCRUD;
+
+service AccountCRUD {
+  rpc GetAccounts (common.Empty) returns (Accounts);
+  rpc GetByID (AccountFilter) returns (AccountResponse);
+  rpc GetByUserID (AccountRequest) returns (AccountResponse);
+  rpc Insert (Account) returns (common.Empty);
+  rpc Update (Account) returns (common.Empty);
+  rpc Delete (AccountFilter) returns (common.Empty);
+  rpc Deposit (DepositRequest) returns (common.Empty);
+  rpc Withdraw (WithdrawRequest) returns (common.Empty);
+  rpc Transfer (TransferRequest) returns (common.Empty);
+}
+
+message Account {
+  string id = 1;
+  double balance = 2;
+  AccountProtoEnum accountType = 3;
+  string userId = 4;
+}
+
+message Accounts{
+  repeated Account items = 1;
+}
+
+message AccountFilter{
+  string id = 1;
+  double balance = 2;
+  AccountProtoEnum accountType = 3;
+  string userId = 4;
+}
+
+message AccountRequest{
+  string userId = 1;
+}
+
+message AccountResponse{
+  Account account = 1;
+}
+
+message DepositRequest{
+  double amount = 1;
+  string accountId = 2;
+}
+
+message WithdrawRequest{
+  double amount = 1;
+  string accountId = 2;
+}
+
+message TransferRequest{
+  double amount = 1;
+  string toUsername = 2;
+  string fromUsername = 3;
+}
+
+enum AccountProtoEnum {
+  CHECKING = 0;
+  SAVING = 1;
+}

@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+option csharp_namespace = "NewBankServer.Protos";
+import "Protos/common.proto";
+import "google/protobuf/timestamp.proto";
+
+package protos.transaction;
+
+service TransactionCRUD{
+  rpc CreateTransaction (CreateTransactionRequest) returns (common.Empty);
+  rpc GetAllUserTransactions (GetAllUserTransactionsRequest) returns (stream Transaction);
+  rpc GetTransactionsByFilter (GetTransactionsByFilterRequest) returns (Transactions);
+}
+
+enum TransactionProtoEnum{
+  DEPOSIT = 0;
+  WITHDRAW = 1;
+  TRANSFER = 2;
+  LOGIN = 3;
+  LOGOUT = 4;
+}
+
+message Transaction {
+  string id = 1;
+  google.protobuf.Timestamp transactionCreatedTime = 2;
+  string message = 3;
+  string userId = 4;
+  TransactionProtoEnum transactionType = 5;
+  double amount = 6;
+}
+
+message CreateTransactionRequest {
+  Transaction transaction = 1;
+}
+
+message GetAllUserTransactionsRequest {
+  string userId = 1;
+}
+
+message GetTransactionsByFilterRequest{
+  string id = 1;
+  google.protobuf.Timestamp transactionCreatedTime = 2;
+  string message = 3;
+  string userId = 4;
+  TransactionProtoEnum transactionType = 5;
+  double amount = 6;
+}
+
+message Transactions {
+  repeated Transaction items = 1;
+}

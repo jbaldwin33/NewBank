@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcGreeter", "GrpcGreeter\GrpcGreeter.csproj", "{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewBankServer", "NewBankServer\NewBankServer.csproj", "{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
