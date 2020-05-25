@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankServer", "BankServer\BankServer.csproj", "{4A51C09D-502C-43F3-8ED6-46D28AB20268}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcGreeter", "GrpcGreeter\GrpcGreeter.csproj", "{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4A51C09D-502C-43F3-8ED6-46D28AB20268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A51C09D-502C-43F3-8ED6-46D28AB20268}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A51C09D-502C-43F3-8ED6-46D28AB20268}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A51C09D-502C-43F3-8ED6-46D28AB20268}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}.Release|Any CPU.ActiveCfg = Release|Any CPU

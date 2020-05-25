@@ -33,12 +33,8 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BankServer\BankServer.csproj" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /Y &quot;E:\VSProjects\NewBank\GrpcGreeter\Protos\*&quot; &quot;E:\VSProjects\NewBankClient\GrpcGreeterClient\Protos\&quot;" />
+    <Exec Command="xcopy /Y &quot;E:\VSProjects\NewBank\GrpcGreeter\Protos\*&quot; &quot;E:\VSProjects\NewBankClient\GrpcGreeterClient\Protos\&quot;&#xD;&#xA;xcopy /Y &quot;E:\VSProjects\NewBank\GrpcGreeter\Protos\*&quot; &quot;E:\VSProjects\NewBankWebClient\NewBankWebClient.Shared\Protos\&quot;" />
   </Target>
 
 </Project>
