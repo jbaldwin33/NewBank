@@ -22,6 +22,7 @@ message LoginResponse{
 
 message LogoutRequest{
   string sessionId = 1;
+  userCRUD.User user = 2;
 }
 
 message LogoutResponse{

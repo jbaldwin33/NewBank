@@ -16,6 +16,8 @@ enum TransactionProtoEnum{
   DEPOSIT = 0;
   WITHDRAW = 1;
   TRANSFER = 2;
+  LOGIN = 3;
+  LOGOUT = 4;
 }
 
 message Transaction {

@@ -82,8 +82,9 @@ namespace GrpcGreeter.Services
       account.Balance += request.Amount;
       db.Accounts.Attach(account);
       db.Entry(account).Property(a => a.Balance).IsModified = true;
+      var t = TransactionModel.CreateDepositTransaction(request, account);
 
-      db.Transactions.Add(TransactionModel.CreateDepositTransaction(request, account));
+      db.Transactions.Add(t);
       db.SaveChanges();
 
       return Task.FromResult(new Empty());

@@ -27,12 +27,9 @@ namespace GrpcGreeter.Services
 
     public async override Task GetAllUserTransactions(GetAllUserTransactionsRequest request, IServerStreamWriter<Transaction> responseStream, ServerCallContext context)
     {
-      while (!context.CancellationToken.IsCancellationRequested)
-      {
-        var transactions = db.Transactions;
-        foreach (var transaction in transactions)
-          await responseStream.WriteAsync(TransactionModel.ConvertTransaction(transaction));
-      }
+      var transactions = db.Transactions.Where(t => t.UserID == Guid.Parse(request.UserId));
+      foreach (var transaction in transactions)
+        await responseStream.WriteAsync(TransactionModel.ConvertTransaction(transaction));
     }
 
     public override Task<Transactions> GetTransactionsByFilter(GetTransactionsByFilterRequest request, ServerCallContext context)

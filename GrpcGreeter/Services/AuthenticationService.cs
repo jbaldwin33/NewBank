@@ -33,6 +33,7 @@ namespace GrpcGreeter.Services
 
       var sessionID = Guid.NewGuid();
       db.Sessions.Add(new SessionModel { ID = sessionID });
+      db.Transactions.Add(TransactionModel.CreateLoginTransaction(user));
       db.SaveChanges();
       Console.WriteLine($"Number of active sessions : {db.Sessions.Count()}");
 
@@ -44,10 +45,14 @@ namespace GrpcGreeter.Services
       if (string.IsNullOrEmpty(request.SessionId))
         throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request.SessionId)));
       var session = db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId));
+      var user = db.Users.FirstOrDefault(u => u.ID == Guid.Parse(request.User.Id));
       if (session == null)
         throw new RpcException(new Status(StatusCode.NotFound, "Session does not exist"));
+      if (user == null)
+        throw new RpcException(new Status(StatusCode.NotFound, "User does not exist"));
 
       db.Sessions.Remove(session);
+      db.Transactions.Add(TransactionModel.CreateLogoutTransaction(user));
       db.SaveChanges();
       Console.WriteLine($"Number of active sessions : {db.Sessions.Count()}");
 

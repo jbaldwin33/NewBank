@@ -11,7 +11,9 @@ namespace GrpcGreeter.Models
   {
     Deposit,
     Withdraw,
-    Transfer
+    Transfer,
+    LogIn,
+    LogOut
   }
 
   public class TransactionModel
@@ -29,6 +31,8 @@ namespace GrpcGreeter.Models
         TransactionProtoEnum.Deposit => TransactionDbEnum.Deposit,
         TransactionProtoEnum.Withdraw => TransactionDbEnum.Withdraw,
         TransactionProtoEnum.Transfer => TransactionDbEnum.Transfer,
+        TransactionProtoEnum.Login => TransactionDbEnum.LogIn,
+        TransactionProtoEnum.Logout => TransactionDbEnum.LogOut,
         _ => throw new NotSupportedException($"{transactionType} not supported")
       };
 
@@ -38,6 +42,8 @@ namespace GrpcGreeter.Models
         TransactionDbEnum.Deposit => TransactionProtoEnum.Deposit,
         TransactionDbEnum.Withdraw => TransactionProtoEnum.Withdraw,
         TransactionDbEnum.Transfer => TransactionProtoEnum.Transfer,
+        TransactionDbEnum.LogIn => TransactionProtoEnum.Login,
+        TransactionDbEnum.LogOut => TransactionProtoEnum.Logout,
         _ => throw new NotSupportedException($"{transactionType} not supported")
       };
 
@@ -46,7 +52,7 @@ namespace GrpcGreeter.Models
       Id = model.ID.ToString(),
       Amount = model.Amount,
       Message = model.Message,
-      TransactionCreatedTime = Timestamp.FromDateTime(model.TransactionCreatedTime),
+      TransactionCreatedTime = Timestamp.FromDateTime(DateTime.SpecifyKind(model.TransactionCreatedTime, DateTimeKind.Utc)),
       TransactionType = ConvertTransactionType(model.TransactionType),
       UserId = model.UserID.ToString()
     };
@@ -56,7 +62,7 @@ namespace GrpcGreeter.Models
       ID = Guid.Parse(transaction.Id),
       Amount = transaction.Amount,
       Message = transaction.Message,
-      TransactionCreatedTime = transaction.TransactionCreatedTime.ToDateTime(),
+      TransactionCreatedTime = DateTime.SpecifyKind(transaction.TransactionCreatedTime.ToDateTime(), DateTimeKind.Utc),
       TransactionType = ConvertTransactionType(transaction.TransactionType),
       UserID = Guid.Parse(transaction.UserId)
     };
@@ -66,7 +72,7 @@ namespace GrpcGreeter.Models
       Amount = request.Amount,
       ID = Guid.NewGuid(),
       Message = $"${request.Amount}.00 deposited into the account",
-      TransactionCreatedTime = DateTime.Now,
+      TransactionCreatedTime = DateTime.UtcNow,
       TransactionType = TransactionDbEnum.Deposit,
       UserID = account.UserID
     };
@@ -76,7 +82,7 @@ namespace GrpcGreeter.Models
       Amount = request.Amount,
       ID = Guid.NewGuid(),
       Message = $"${request.Amount}.00 withdrawn from the account",
-      TransactionCreatedTime = DateTime.Now,
+      TransactionCreatedTime = DateTime.UtcNow,
       TransactionType = TransactionDbEnum.Withdraw,
       UserID = account.UserID
     };
@@ -86,7 +92,7 @@ namespace GrpcGreeter.Models
       Amount = request.Amount,
       ID = Guid.NewGuid(),
       Message = $"${request.Amount}.00 transferred to the user {user.Username}",
-      TransactionCreatedTime = DateTime.Now,
+      TransactionCreatedTime = DateTime.UtcNow,
       TransactionType = TransactionDbEnum.Transfer,
       UserID = user.ID
     };
@@ -96,8 +102,26 @@ namespace GrpcGreeter.Models
       Amount = request.Amount,
       ID = Guid.NewGuid(),
       Message = $"${request.Amount}.00 transferred from user {user.Username}",
-      TransactionCreatedTime = DateTime.Now,
+      TransactionCreatedTime = DateTime.UtcNow,
       TransactionType = TransactionDbEnum.Transfer,
+      UserID = user.ID
+    };
+
+    public static TransactionModel CreateLoginTransaction(UserModel user) => new TransactionModel
+    {
+      ID = Guid.NewGuid(),
+      Message = $"Logged in",
+      TransactionCreatedTime = DateTime.UtcNow,
+      TransactionType = TransactionDbEnum.LogIn,
+      UserID = user.ID
+    };
+
+    public static TransactionModel CreateLogoutTransaction(UserModel user) => new TransactionModel
+    {
+      ID = Guid.NewGuid(),
+      Message = $"Logged out",
+      TransactionCreatedTime = DateTime.UtcNow,
+      TransactionType = TransactionDbEnum.LogOut,
       UserID = user.ID
     };
   }

@@ -10,10 +10,7 @@ namespace GrpcGreeter
 {
   public class AppDbContext : DbContext
   {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
-    {
-      var c = 1;
-    }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<UserModel> Users { get; set; }
     public DbSet<AccountModel> Accounts { get; set; }
