@@ -42,7 +42,7 @@ namespace NewBankServer.Services
         users = db.Users.Where(p => p.Age == request.Age).ToArray();
 
       if (users.Length == 0)
-        throw new RpcException(new Status(StatusCode.InvalidArgument, "User not found"));
+        throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
       
       var output = new Users();
       var newUsers = users.Select(u => UserModel.ConvertUser(u));

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NewBankServer.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System.Net;
 
 namespace NewBankServer
 {
@@ -23,6 +24,7 @@ namespace NewBankServer
             .ConfigureWebHostDefaults(webBuilder =>
             {
               webBuilder.UseStartup<Startup>();
+              webBuilder.UseUrls("https://192.168.0.18:5001");
             });
   }
 }

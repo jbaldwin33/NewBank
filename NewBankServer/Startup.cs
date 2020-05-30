@@ -27,15 +27,14 @@ namespace NewBankServer
     }
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
-        .AddCertificate(options =>
-        {
-          if (isDevelopment)
-            options.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck;
-        });
+      //services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+      //  .AddCertificate(options =>
+      //  {
+      //    if (isDevelopment)
+      //      options.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck;
+      //  });
       services.AddAuthorization();
       services.AddGrpc();
-      
       services.AddDbContext<AppDbContext>(options => options.UseSqlServer("data source=.\\SQLEXPRESS; initial catalog=NewBank;integrated security=true"));
 
       //if server goes down clear out sessions
@@ -56,10 +55,9 @@ namespace NewBankServer
       {
         app.UseDeveloperExceptionPage();
       }
-      
       app.UseRouting();
-      app.UseAuthentication();
-      app.UseAuthorization();
+      //app.UseAuthentication();
+      //app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
       {
