@@ -33,10 +33,12 @@ message AccountFilter{
   double balance = 2;
   AccountProtoEnum accountType = 3;
   string userId = 4;
+  string sessionId = 5;
 }
 
 message AccountRequest{
   string userId = 1;
+  string sessionId = 2;
 }
 
 message AccountResponse{
@@ -46,17 +48,20 @@ message AccountResponse{
 message DepositRequest{
   double amount = 1;
   string accountId = 2;
+  string sessionId = 3;
 }
 
 message WithdrawRequest{
   double amount = 1;
   string accountId = 2;
+  string sessionId = 3;
 }
 
 message TransferRequest{
   double amount = 1;
   string toUsername = 2;
   string fromUsername = 3;
+  string sessionId = 4;
 }
 
 enum AccountProtoEnum {

@@ -35,6 +35,7 @@ message CreateTransactionRequest {
 
 message GetAllUserTransactionsRequest {
   string userId = 1;
+  string sessionId = 2;
 }
 
 message GetTransactionsByFilterRequest{
@@ -44,6 +45,7 @@ message GetTransactionsByFilterRequest{
   string userId = 4;
   TransactionProtoEnum transactionType = 5;
   double amount = 6;
+  string sessionId = 7;
 }
 
 message Transactions {

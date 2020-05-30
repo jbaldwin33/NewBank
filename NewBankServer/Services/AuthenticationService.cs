@@ -10,14 +10,9 @@ namespace NewBankServer.Services
 {
   public class AuthenticationService : Authentication.AuthenticationBase
   {
-    private readonly AppDbContext db;
-    public AuthenticationService(AppDbContext db)
-    {
-      this.db = db;
-    }
-
     public override Task<LoginResponse> Login(LoginRequest request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
       if (string.IsNullOrEmpty(request.Username))
         throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request.Username)));
       if (string.IsNullOrEmpty(request.PasswordHash))
@@ -42,6 +37,7 @@ namespace NewBankServer.Services
 
     public override Task<LogoutResponse> Logout(LogoutRequest request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
       if (string.IsNullOrEmpty(request.SessionId))
         throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request.SessionId)));
       var session = db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId));

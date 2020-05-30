@@ -47,6 +47,7 @@ message UserFilter{
 message UserCredential{
   string username = 1;
   string passwordHash = 2;
+  string sessionId = 3;
 }
 
 message UserResponse{

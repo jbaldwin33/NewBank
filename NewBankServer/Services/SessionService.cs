@@ -13,14 +13,9 @@ namespace NewBankServer.Services
 {
   public class SessionService : SessionCRUD.SessionCRUDBase
   {
-    private readonly AppDbContext db;
-    public SessionService(AppDbContext db)
-    {
-      this.db = db;
-    }
-
     public override Task<Empty> AddSession(SessionRequest request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
       if (Guid.Parse(request.SessionId) == Guid.Empty)
         throw new RpcException(new Status(StatusCode.InvalidArgument, request.SessionId));
       if (db.Sessions.Any(s => s.ID == Guid.Parse(request.SessionId)))
@@ -33,6 +28,7 @@ namespace NewBankServer.Services
 
     public override Task<Empty> RemoveSession(SessionRequest request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
       if (Guid.Parse(request.SessionId) == Guid.Empty)
         throw new RpcException(new Status(StatusCode.InvalidArgument, request.SessionId));
 
@@ -49,6 +45,7 @@ namespace NewBankServer.Services
 
     public override Task<Sessions> GetSessions(Empty request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
       var sessions = new Sessions();
       var query = from s in db.Sessions
                   select SessionModel.ConvertSession(s);
@@ -58,12 +55,14 @@ namespace NewBankServer.Services
 
     public override Task<ValidSessionResponse> IsValidSession(SessionRequest request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
       var exists = db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId)) != null;
       return Task.FromResult(new ValidSessionResponse { Valid = exists });
     }
 
     public override Task<Empty> ClearSessions(Empty request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
       foreach (var session in db.Sessions)
         db.Sessions.Remove(session);
 

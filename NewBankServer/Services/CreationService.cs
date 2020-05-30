@@ -10,15 +10,9 @@ namespace NewBankServer.Services
 {
   public class CreationService : Creation.CreationBase
   {
-    private readonly AppDbContext db;
-
-    public CreationService(AppDbContext db)
-    {
-      this.db = db;
-    }
-
     public override Task<SignUpResponse> SignUp(SignUpRequest request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
       if (request.User == null)
         throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request.User)));
       if (request.Account == null)

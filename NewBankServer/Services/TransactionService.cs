@@ -11,14 +11,9 @@ namespace NewBankServer.Services
 {
   public class TransactionService : TransactionCRUD.TransactionCRUDBase
   {
-    private readonly AppDbContext db;
-
-    public TransactionService(AppDbContext db)
-    {
-      this.db = db;
-    }
     public async override Task<Empty> CreateTransaction(CreateTransactionRequest request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
       await db.Transactions.AddAsync(TransactionModel.ConvertTransaction(request.Transaction));
       await db.SaveChangesAsync();
 
@@ -27,6 +22,10 @@ namespace NewBankServer.Services
 
     public async override Task GetAllUserTransactions(GetAllUserTransactionsRequest request, IServerStreamWriter<Transaction> responseStream, ServerCallContext context)
     {
+      using var db = new AppDbContext();
+      if (db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId)) == null)
+        throw new RpcException(new Status(StatusCode.PermissionDenied, "Session is invalid"));
+
       var transactions = db.Transactions.Where(t => t.UserID == Guid.Parse(request.UserId));
       foreach (var transaction in transactions)
         await responseStream.WriteAsync(TransactionModel.ConvertTransaction(transaction));
@@ -34,6 +33,10 @@ namespace NewBankServer.Services
 
     public override Task<Transactions> GetTransactionsByFilter(GetTransactionsByFilterRequest request, ServerCallContext context)
     {
+      using var db = new AppDbContext();
+      if (db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId)) == null)
+        throw new RpcException(new Status(StatusCode.PermissionDenied, "Session is invalid"));
+
       TransactionModel[] transactions;
       if (request.Amount > 0)
         transactions = db.Transactions.Where(t => t.Amount == request.Amount).ToArray();
