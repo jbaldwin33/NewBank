@@ -64,8 +64,8 @@ namespace NewBankServer.Services
 
     public override Task<Empty> ClearSessions(Empty request, ServerCallContext context)
     {
-      foreach (var id in db.Sessions.Select(s => s.ID))
-        db.Sessions.Remove(new SessionModel { ID = id });
+      foreach (var session in db.Sessions)
+        db.Sessions.Remove(session);
 
       db.SaveChanges();
 

@@ -19,6 +19,16 @@ namespace NewBankServer.Models
     public AccountDbEnum AccountType { get; set; }
     public Guid UserID { get; set; }
 
+    public AccountModel() { }
+
+    public AccountModel(Guid id, double balance, AccountDbEnum accountType, Guid userID)
+    {
+      ID = id;
+      Balance = balance;
+      AccountType = accountType;
+      UserID = userID;
+    }
+
     public static AccountDbEnum ConvertAccountType(AccountProtoEnum accountType)
     {
       return accountType switch
@@ -47,13 +57,11 @@ namespace NewBankServer.Models
       UserId = accountModel.UserID.ToString()
     };
 
-    public static AccountModel ConvertAccount(Account account) => new AccountModel
-    {
-      AccountType = ConvertAccountType(account.AccountType),
-      Balance = account.Balance,
-      ID = Guid.Parse(account.Id),
-      UserID = Guid.Parse(account.UserId)
-    };
+    public static AccountModel ConvertAccount(Account account) => new AccountModel(
+      Guid.Parse(account.Id),
+      account.Balance,
+      ConvertAccountType(account.AccountType),
+      Guid.Parse(account.UserId));
   }
 
 }

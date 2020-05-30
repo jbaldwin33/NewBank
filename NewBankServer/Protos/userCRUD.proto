@@ -19,12 +19,11 @@ message User {
   string firstName = 1;
   string lastName = 2;
   string id = 3;
-  int32 age = 4;
-  string username = 5;
-  string passwordHash = 6;
-  string passwordSalt = 7;
-  string accountId = 8;
-  UserProtoEnum userType = 9;
+  string username = 4;
+  string passwordHash = 5;
+  string passwordSalt = 6;
+  string accountId = 7;
+  UserProtoEnum userType = 8;
 }
 
 enum UserProtoEnum {
@@ -40,7 +39,6 @@ message UserFilter{
   string id = 1;
   string firstName = 2;
   string lastName = 3;
-  int32 age = 4;
   string username = 5;
   string accountId = 6;
   UserProtoEnum userType = 7;

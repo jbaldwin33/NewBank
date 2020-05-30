@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NewBankServer.Engines;
 
 namespace NewBankServer
 {
@@ -35,17 +36,17 @@ namespace NewBankServer
       //  });
       services.AddAuthorization();
       services.AddGrpc();
-      services.AddDbContext<AppDbContext>(options => options.UseSqlServer("data source=.\\SQLEXPRESS; initial catalog=NewBank;integrated security=true"));
+
+      var dbOptions = new DbContextOptionsBuilder<AppDbContext>();
+
+      services.AddDbContext<AppDbContext>(options => dbOptions.UseSqlServer("data source=.\\SQLEXPRESS; initial catalog=NewBank;integrated security=true"));
+      services.AddSingleton<IPollingEngine>(x => new PollingEngine(dbOptions));
 
       //if server goes down clear out sessions
-      var options = new DbContextOptionsBuilder<AppDbContext>().UseSqlServer("data source=.\\SQLEXPRESS; initial catalog=NewBank;integrated security=true");
-      using (var context = new AppDbContext(options.Options))
-      {
-        var ids = context.Sessions.Select(s => s.ID);
-        foreach (var id in ids)
-          context.Sessions.Remove(new Models.SessionModel { ID = id });
-        context.SaveChanges();
-      }
+      using var context = new AppDbContext(dbOptions.Options);
+      foreach (var session in context.Sessions)
+        context.Sessions.Remove(session);
+      context.SaveChanges();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -22,9 +22,21 @@ namespace NewBankServer.Models
     public DateTime TransactionCreatedTime { get; set; }
     public string Message { get; set; }
     public Guid UserID { get; set; }
+    public TransactionDbEnum TransactionDbEnum { get; }
     public TransactionDbEnum TransactionType { get; set; }
     public double Amount { get; set; }
 
+    public TransactionModel() { }
+
+    public TransactionModel(Guid id, DateTime transactionCreatedTime, string message, Guid userID, TransactionDbEnum transactionDbEnum, double amount)
+    {
+      ID = id;
+      TransactionCreatedTime = transactionCreatedTime;
+      Message = message;
+      UserID = userID;
+      TransactionDbEnum = transactionDbEnum;
+      Amount = amount;
+    }
     public static TransactionDbEnum ConvertTransactionType(TransactionProtoEnum transactionType)
       => transactionType switch
       {
@@ -57,73 +69,61 @@ namespace NewBankServer.Models
       UserId = model.UserID.ToString()
     };
 
-    public static TransactionModel ConvertTransaction(Transaction transaction) => new TransactionModel
-    {
-      ID = Guid.Parse(transaction.Id),
-      Amount = transaction.Amount,
-      Message = transaction.Message,
-      TransactionCreatedTime = DateTime.SpecifyKind(transaction.TransactionCreatedTime.ToDateTime(), DateTimeKind.Utc),
-      TransactionType = ConvertTransactionType(transaction.TransactionType),
-      UserID = Guid.Parse(transaction.UserId)
-    };
+    public static TransactionModel ConvertTransaction(Transaction transaction) => new TransactionModel(
+      Guid.Parse(transaction.Id),
+      DateTime.SpecifyKind(transaction.TransactionCreatedTime.ToDateTime(), DateTimeKind.Utc),
+      transaction.Message,
+      Guid.Parse(transaction.UserId),
+      ConvertTransactionType(transaction.TransactionType),
+      transaction.Amount);
 
-    public static TransactionModel CreateDepositTransaction(DepositRequest request, AccountModel account) => new TransactionModel
-    {
-      Amount = request.Amount,
-      ID = Guid.NewGuid(),
-      Message = $"${request.Amount}.00 deposited into the account",
-      TransactionCreatedTime = DateTime.UtcNow,
-      TransactionType = TransactionDbEnum.Deposit,
-      UserID = account.UserID
-    };
+    public static TransactionModel CreateDepositTransaction(DepositRequest request, AccountModel account) => new TransactionModel(
+      Guid.NewGuid(),
+      DateTime.UtcNow,
+      $"${request.Amount}.00 deposited into the account",
+      account.UserID,
+      TransactionDbEnum.Deposit,
+      request.Amount);
 
-    public static TransactionModel CreateWithdrawTransaction(WithdrawRequest request, AccountModel account) => new TransactionModel
-    {
-      Amount = request.Amount,
-      ID = Guid.NewGuid(),
-      Message = $"${request.Amount}.00 withdrawn from the account",
-      TransactionCreatedTime = DateTime.UtcNow,
-      TransactionType = TransactionDbEnum.Withdraw,
-      UserID = account.UserID
-    };
+    public static TransactionModel CreateWithdrawTransaction(WithdrawRequest request, AccountModel account) => new TransactionModel(
+      Guid.NewGuid(),
+      DateTime.UtcNow,
+      $"${request.Amount}.00 withdrawn from the account",
+      account.UserID,
+      TransactionDbEnum.Withdraw,
+      request.Amount);
 
-    public static TransactionModel CreateTransferToTransaction(TransferRequest request, UserModel user) => new TransactionModel
-    {
-      Amount = request.Amount,
-      ID = Guid.NewGuid(),
-      Message = $"${request.Amount}.00 transferred to the user {user.Username}",
-      TransactionCreatedTime = DateTime.UtcNow,
-      TransactionType = TransactionDbEnum.Transfer,
-      UserID = user.ID
-    };
+    public static TransactionModel CreateTransferToTransaction(TransferRequest request, UserModel user) => new TransactionModel(
+      Guid.NewGuid(),
+      DateTime.UtcNow,
+      $"${request.Amount}.00 transferred to the user {user.Username}",
+      user.ID,
+      TransactionDbEnum.Transfer,
+      request.Amount);
 
-    public static TransactionModel CreateTransferFromTransaction(TransferRequest request, UserModel user) => new TransactionModel
-    {
-      Amount = request.Amount,
-      ID = Guid.NewGuid(),
-      Message = $"${request.Amount}.00 transferred from user {user.Username}",
-      TransactionCreatedTime = DateTime.UtcNow,
-      TransactionType = TransactionDbEnum.Transfer,
-      UserID = user.ID
-    };
+    public static TransactionModel CreateTransferFromTransaction(TransferRequest request, UserModel user) => new TransactionModel(
+      Guid.NewGuid(),
+      DateTime.UtcNow,
+      $"${request.Amount}.00 transferred from user {user.Username}",
+      user.ID,
+      TransactionDbEnum.Transfer,
+      request.Amount);
 
-    public static TransactionModel CreateLoginTransaction(UserModel user) => new TransactionModel
-    {
-      ID = Guid.NewGuid(),
-      Message = $"Logged in",
-      TransactionCreatedTime = DateTime.UtcNow,
-      TransactionType = TransactionDbEnum.LogIn,
-      UserID = user.ID
-    };
+    public static TransactionModel CreateLoginTransaction(UserModel user) => new TransactionModel(
+      Guid.NewGuid(),
+      DateTime.UtcNow,
+      $"Logged in",
+      user.ID,
+      TransactionDbEnum.LogIn,
+      0);
 
-    public static TransactionModel CreateLogoutTransaction(UserModel user) => new TransactionModel
-    {
-      ID = Guid.NewGuid(),
-      Message = $"Logged out",
-      TransactionCreatedTime = DateTime.UtcNow,
-      TransactionType = TransactionDbEnum.LogOut,
-      UserID = user.ID
-    };
+    public static TransactionModel CreateLogoutTransaction(UserModel user) => new TransactionModel(
+      Guid.NewGuid(),
+      DateTime.UtcNow,
+      $"Logged out",
+      user.ID,
+      TransactionDbEnum.LogOut,
+      0);
   }
 
 }

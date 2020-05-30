@@ -2,6 +2,7 @@ syntax = "proto3";
 
 option csharp_namespace = "NewBankServer.Protos";
 import "Protos/common.proto";
+import "google/protobuf/timestamp.proto";
 
 package protos.sessionCRUD;
 
@@ -16,6 +17,7 @@ service SessionCRUD {
 message SessionRequest {
   string sessionId = 1;
   string username = 2;
+  google.protobuf.Timestamp logInDateTime = 3;
 }
 
 message ValidSessionResponse {

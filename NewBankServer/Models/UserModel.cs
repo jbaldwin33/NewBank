@@ -18,13 +18,25 @@ namespace NewBankServer.Models
     public Guid ID { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public int Age { get; set; }
     public string Username { get; set; }
     public string PasswordHash { get; set; }
     public string PasswordSalt { get; set; }
-    public Guid SkillID { get; set; }
     public Guid AccountID { get; set; }
     public UserDbEnum UserType { get; set; }
+
+    public UserModel() { }
+
+    public UserModel(Guid id, string firstName, string lastName, string username, string passwordHash, string passwordSalt, Guid accountID, UserDbEnum userType)
+    {
+      ID = id;
+      FirstName = firstName;
+      LastName = lastName;
+      Username = username;
+      PasswordHash = passwordHash;
+      PasswordSalt = passwordSalt;
+      AccountID = accountID;
+      UserType = userType;
+    }
 
     public static UserDbEnum ConvertUserType(UserProtoEnum userProtoType)
     {
@@ -49,7 +61,6 @@ namespace NewBankServer.Models
     public static User ConvertUser(UserModel userModel) => new User
     {
       AccountId = userModel.AccountID.ToString(),
-      Age = userModel.Age,
       FirstName = userModel.FirstName,
       Id = userModel.ID.ToString(),
       LastName = userModel.LastName,
@@ -59,17 +70,14 @@ namespace NewBankServer.Models
       UserType = ConvertUserType(userModel.UserType)
     };
 
-    public static UserModel ConvertUser(User userModel) => new UserModel
-    {
-      AccountID = Guid.Parse(userModel.AccountId),
-      Age = userModel.Age,
-      FirstName = userModel.FirstName,
-      ID = Guid.Parse(userModel.Id),
-      LastName = userModel.LastName,
-      PasswordHash = userModel.PasswordHash,
-      PasswordSalt = userModel.PasswordSalt,
-      Username = userModel.Username,
-      UserType = ConvertUserType(userModel.UserType)
-    };
+    public static UserModel ConvertUser(User userModel) => new UserModel(
+      Guid.Parse(userModel.Id),
+      userModel.FirstName,
+      userModel.LastName,
+      userModel.Username,
+      userModel.PasswordHash,
+      userModel.PasswordSalt,
+      Guid.Parse(userModel.AccountId),
+      ConvertUserType(userModel.UserType));
   }
 }

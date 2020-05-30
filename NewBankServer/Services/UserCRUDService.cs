@@ -38,8 +38,6 @@ namespace NewBankServer.Services
         users = db.Users.Where(p => p.LastName == request.LastName).ToArray();
       else if (!string.IsNullOrEmpty(request.Username))
         users = db.Users.Where(p => p.Username == request.Username).ToArray();
-      else if (request.Age != 0)
-        users = db.Users.Where(p => p.Age == request.Age).ToArray();
 
       if (users.Length == 0)
         throw new RpcException(new Status(StatusCode.NotFound, "User not found"));

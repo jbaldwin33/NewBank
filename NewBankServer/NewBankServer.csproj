@@ -33,6 +33,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="NewBankShared">
+      <HintPath>..\..\NewBankShared\NewBankShared\bin\Debug\netcoreapp3.1\NewBankShared.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /Y &quot;E:\VSProjects\NewBank\NewBankServer\Protos\*&quot; &quot;E:\VSProjects\NewBankClient\NewBankClientGrpc\Protos\&quot;&#xD;&#xA;xcopy /Y &quot;E:\VSProjects\NewBank\NewBankServer\Protos\*&quot; &quot;E:\VSProjects\NewBankWebClient\NewBankWebClient\Shared\Protos\&quot;" />
   </Target>

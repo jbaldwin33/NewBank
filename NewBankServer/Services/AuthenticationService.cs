@@ -32,7 +32,7 @@ namespace NewBankServer.Services
         db.Sessions.Remove(userSession);
 
       var sessionID = Guid.NewGuid();
-      db.Sessions.Add(new SessionModel { ID = sessionID });
+      db.Sessions.Add(new SessionModel(sessionID, request.Username, DateTime.UtcNow));
       db.Transactions.Add(TransactionModel.CreateLoginTransaction(user));
       db.SaveChanges();
       Console.WriteLine($"Number of active sessions : {db.Sessions.Count()}");
