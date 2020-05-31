@@ -23,11 +23,8 @@ namespace NewBankServer.Engines
           using var db = new AppDbContext();
           foreach (var session in db.Sessions)
           {
-            if (DateTime.UtcNow >= session.LogInDateTime.AddSeconds(10))
-            {
-
+            if (DateTime.UtcNow >= session.LogInDateTime.AddMinutes(1))
               db.Sessions.Remove(session);
-            }
           }
           db.SaveChanges();
           Task.Delay(30000);
