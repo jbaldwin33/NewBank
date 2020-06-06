@@ -96,7 +96,7 @@ namespace NewBankServer.Models
     public static TransactionModel CreateTransferToTransaction(TransferRequest request, UserModel user) => new TransactionModel(
       Guid.NewGuid(),
       DateTime.UtcNow,
-      $"${request.Amount}.00 transferred to the user {user.Username}",
+      $"${request.Amount}.00 transferred to the user {request.ToUsername}",
       user.ID,
       TransactionDbEnum.Transfer,
       request.Amount);
@@ -104,7 +104,7 @@ namespace NewBankServer.Models
     public static TransactionModel CreateTransferFromTransaction(TransferRequest request, UserModel user) => new TransactionModel(
       Guid.NewGuid(),
       DateTime.UtcNow,
-      $"${request.Amount}.00 transferred from user {user.Username}",
+      $"${request.Amount}.00 transferred from user {request.FromUsername}",
       user.ID,
       TransactionDbEnum.Transfer,
       request.Amount);

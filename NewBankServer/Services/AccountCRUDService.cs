@@ -152,8 +152,8 @@ namespace NewBankServer.Services
       db.Accounts.Attach(fromAccount);
       db.Entry(fromAccount).Property(a => a.Balance).IsModified = true;
 
-      db.Transactions.Add(TransactionModel.CreateTransferToTransaction(request, toUser));
-      db.Transactions.Add(TransactionModel.CreateTransferFromTransaction(request, fromUser));
+      db.Transactions.Add(TransactionModel.CreateTransferToTransaction(request, fromUser));
+      db.Transactions.Add(TransactionModel.CreateTransferFromTransaction(request, toUser));
       db.SaveChanges();
 
       return Task.FromResult(new Empty());
