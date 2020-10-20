@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /Y &quot;E:\VSProjects\NewBank\NewBankServer\Protos\*&quot; &quot;E:\VSProjects\NewBankClient\NewBankClientGrpc\Protos\&quot;&#xD;&#xA;xcopy /Y &quot;E:\VSProjects\NewBank\NewBankServer\Protos\*&quot; &quot;E:\VSProjects\NewBankWebClient\BlazorClient\Protos\&quot;" />
+    <Exec Command="xcopy /Y &quot;C:\Users\Josh\VSProjects\NewBank\NewBankServer\Protos\*&quot; &quot;C:\Users\Josh\VSProjects\NewBankClient\NewBankClientGrpc\Protos\&quot;&#xD;&#xA;xcopy /Y &quot;C:\Users\Josh\VSProjects\NewBank\NewBankServer\Protos\*&quot; &quot;C:\Users\Josh\VSProjects\NewBankWebClient\BlazorClient\Protos\&quot;" />
   </Target>
 
 </Project>

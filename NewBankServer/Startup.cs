@@ -1,4 +1,6 @@
-﻿using NewBankServer.Services;
+﻿using System;
+using System.Threading.Tasks;
+using NewBankServer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +20,8 @@ namespace NewBankServer
     public Startup(IWebHostEnvironment env)
     {
       isDevelopment = env.IsDevelopment();
+      AppDomain.CurrentDomain.UnhandledException += GlobalExceptionHandler.UnhandledExceptionHandler;
+      TaskScheduler.UnobservedTaskException += GlobalExceptionHandler.UnobservedTaskExceptionHandler;
     }
     public void ConfigureServices(IServiceCollection services)
     {
@@ -27,6 +31,7 @@ namespace NewBankServer
       //    if (isDevelopment)
       //      options.RevocationMode = System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck;
       //  });
+      //services.AddAuthentication();
       services.AddAuthorization();
       services.AddGrpc();
 
@@ -41,6 +46,8 @@ namespace NewBankServer
 
       new PollingEngine();
     }
+
+    
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

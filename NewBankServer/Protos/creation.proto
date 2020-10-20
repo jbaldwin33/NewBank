@@ -3,11 +3,13 @@ syntax = "proto3";
 option csharp_namespace = "NewBankServer.Protos";
 import "Protos/userCRUD.proto";
 import "Protos/accountCRUD.proto";
+import "Protos/common.proto";
 
 package protos.creation;
 
 service Creation{
   rpc SignUp (SignUpRequest) returns (SignUpResponse);
+  rpc CreatePasswordSalt (common.Empty) returns (CreateSaltResponse);
 }
 
 message SignUpRequest{
@@ -17,4 +19,8 @@ message SignUpRequest{
 
 message SignUpResponse{
 
+}
+
+message CreateSaltResponse{
+  string serverSalt = 1;
 }

@@ -4,6 +4,7 @@ using NewBankServer.Protos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace NewBankServer.Services
@@ -29,6 +30,16 @@ namespace NewBankServer.Services
       db.Accounts.Add(AccountModel.ConvertAccount(request.Account));
       db.SaveChanges();
       return Task.FromResult(new SignUpResponse());
+    }
+
+    public override Task<CreateSaltResponse> CreatePasswordSalt(Empty request, ServerCallContext context)
+    {
+      byte[] saltBytes = new byte[16];
+      RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+      rng.GetBytes(saltBytes);
+
+      var salt = Convert.ToBase64String(saltBytes);
+      return Task.FromResult(new CreateSaltResponse { ServerSalt = salt });
     }
   }
 }
