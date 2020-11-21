@@ -66,7 +66,7 @@ namespace NewBankServer.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "Password",
                 table: "Users",
-                type: "nvarchar(max)",
+                type: "nvarchar(100)",
                 nullable: true);
         }
     }

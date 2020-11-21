@@ -26,7 +26,7 @@ namespace NewBankServer
             {
               webBuilder.UseStartup<Startup>();
 #if DEBUG
-              webBuilder.UseUrls("https://localhost:5001");
+              //webBuilder.UseUrls("https://localhost:5001");
 #else
               webBuilder.UseUrls("https://192.168.0.18:5001");
 #endif

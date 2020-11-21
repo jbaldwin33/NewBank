@@ -1,0 +1,23 @@
+﻿<Window x:Class="ServerConfiguration.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ServerConfiguration"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="200"/>
+        <RowDefinition Height="auto"/>
+        <RowDefinition Height="auto"/>
+      </Grid.RowDefinitions>
+      <Label Grid.Row="0" Content="Server Configuration" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="50"/>
+      <StackPanel Grid.Row="1" Orientation="Vertical">
+        <Label Content="Select a database provider"/>
+        <RadioButton Content="SQL Compact" IsChecked="{Binding UseSqlCe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <RadioButton Content="SQL Server" IsChecked="{Binding UseSqlServer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+      </StackPanel>
+      <Button Grid.Row="2" Content="{Binding SaveLabel}" Command="{Binding SaveCommand}" Width="100"/>
+    </Grid>
+</Window>

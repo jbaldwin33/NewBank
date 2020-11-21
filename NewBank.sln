@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewBankServer", "NewBankServer\NewBankServer.csproj", "{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerConfiguration", "ServerConfiguration\ServerConfiguration.csproj", "{4443987B-0B44-4368-8955-98370AD03665}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerShared", "ServerShared\ServerShared.csproj", "{C5C7B308-0904-4603-AB00-A7FE8C1FD266}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4443987B-0B44-4368-8955-98370AD03665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4443987B-0B44-4368-8955-98370AD03665}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4443987B-0B44-4368-8955-98370AD03665}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4443987B-0B44-4368-8955-98370AD03665}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5C7B308-0904-4603-AB00-A7FE8C1FD266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5C7B308-0904-4603-AB00-A7FE8C1FD266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5C7B308-0904-4603-AB00-A7FE8C1FD266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5C7B308-0904-4603-AB00-A7FE8C1FD266}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

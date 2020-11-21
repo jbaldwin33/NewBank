@@ -1,0 +1,65 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Xml.Serialization;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using ServerShared;
+
+namespace ServerConfiguration
+{
+  public class MainViewModel : ViewModelBase
+  {
+    private static readonly string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ServerConfiguration.xml");
+    private bool useSqlite;
+    private bool useSqlServer;
+    private RelayCommand saveCommand;
+
+    public MainViewModel()
+    {
+      if (File.Exists(filename))
+        LoadFromFile();
+    }
+
+    private void LoadFromFile()
+    {
+      var serializer = new XmlSerializer(typeof(ConfigurationModel));
+      using var stream = new StreamReader(filename);
+      var model = serializer.Deserialize(stream) as ConfigurationModel;
+      useSqlite = model.UseSqlite;
+      useSqlServer = model.UseSqlServer;
+    }
+
+    public string SaveLabel => "Save";
+
+    public bool UseSqlite
+    {
+      get => useSqlite;
+      set => Set(ref useSqlite, value);
+    }
+
+    public bool UseSqlServer
+    {
+      get => useSqlServer;
+      set => Set(ref useSqlServer, value);
+    }
+
+    public RelayCommand SaveCommand => saveCommand ??= new RelayCommand(SaveCommandExecute, SaveCommandCanExecute);
+
+    private void SaveCommandExecute()
+    {
+      var serializer = new XmlSerializer(typeof(ConfigurationModel));
+      var stream = File.Create(filename);
+      var model = new ConfigurationModel
+      {
+        UseSqlite = useSqlite,
+        UseSqlServer = useSqlServer
+      };
+      serializer.Serialize(stream, model);
+    }
+
+    private bool SaveCommandCanExecute() => true;
+  }
+}

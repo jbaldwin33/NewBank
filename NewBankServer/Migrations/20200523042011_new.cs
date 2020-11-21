@@ -18,7 +18,7 @@ namespace NewBankServer.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(100)", nullable: true),
                     OwnerID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Proficiency = table.Column<int>(type: "int", nullable: false)
                 },
