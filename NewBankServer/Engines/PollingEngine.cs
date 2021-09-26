@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,19 +30,41 @@ namespace NewBankServer.Engines
       while (true)
       {
         var removed = false;
-        await using (var db = new AppDbContext())
+        try
         {
-          foreach (var session in db.Sessions)
+          await using (var db = new SqlServerDbContext())
+          //await using(var db = new SqliteDbContext())
           {
-            if (DateTime.UtcNow < session.LogInDateTime.AddMinutes(5))
-              continue;
-            db.Sessions.Remove(session);
-            removed = true;
-          }
+            foreach (var session in db.Sessions)
+            {
+              if (DateTime.UtcNow < session.LogInDateTime.AddMinutes(5))
+                continue;
+              db.Sessions.Remove(session);
+              removed = true;
+            }
 
-          if (removed)
-            db.SaveChangesAsync().Wait();
+            if (removed)
+              db.SaveChangesAsync().Wait();
+          }
         }
+        catch (AggregateException aex)
+        {
+          foreach (var e in aex.InnerExceptions)
+          {
+            Console.WriteLine(e.Message);
+          }
+        }
+        catch (FileNotFoundException fnfe)
+        {
+          Console.WriteLine("Configuration file not found. Please run the ServerConfiguration application to create run. This application will now close.");
+          Environment.Exit(0);
+        }
+        catch (Exception ex)
+        {
+          //some other exception
+          Console.WriteLine(ex.Message);
+        }
+
         await Task.Delay(30000);
       }
     }

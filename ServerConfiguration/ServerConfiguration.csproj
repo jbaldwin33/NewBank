@@ -2,12 +2,16 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>C:\Users\Josh\VSProjects\NewBank\_debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>C:\Users\Josh\VSProjects\NewBank\_release\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,8 +20,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="MVVMFramework">
+      <HintPath>..\DLLs\MVVMFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="NewBankShared">
+      <HintPath>..\DLLs\NewBankShared.dll</HintPath>
+    </Reference>
     <Reference Include="ServerShared">
-      <HintPath>..\_debug\netcoreapp3.1\ServerShared.dll</HintPath>
+      <HintPath>..\DLLs\ServerShared.dll</HintPath>
     </Reference>
   </ItemGroup>
 

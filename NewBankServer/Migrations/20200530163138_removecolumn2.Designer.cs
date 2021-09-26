@@ -9,7 +9,7 @@ using NewBankServer;
 
 namespace NewBankServer.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(SqlServerDbContext))]
     [Migration("20200530163138_removecolumn2")]
     partial class removecolumn2
     {

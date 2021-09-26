@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace NewBankServer.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(SqlServerDbContext))]
     [Migration("20200517154804_NewNewNewUser")]
     partial class NewNewNewUser
     {

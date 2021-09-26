@@ -4,10 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewBankServer", "NewBankServer\NewBankServer.csproj", "{2A386E7C-17F2-4DE9-8273-D2D628CDEAB2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C5C7B308-0904-4603-AB00-A7FE8C1FD266} = {C5C7B308-0904-4603-AB00-A7FE8C1FD266}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerConfiguration", "ServerConfiguration\ServerConfiguration.csproj", "{4443987B-0B44-4368-8955-98370AD03665}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerConfiguration", "ServerConfiguration\ServerConfiguration.csproj", "{4443987B-0B44-4368-8955-98370AD03665}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C5C7B308-0904-4603-AB00-A7FE8C1FD266} = {C5C7B308-0904-4603-AB00-A7FE8C1FD266}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerShared", "ServerShared\ServerShared.csproj", "{C5C7B308-0904-4603-AB00-A7FE8C1FD266}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerShared", "ServerShared\ServerShared.csproj", "{C5C7B308-0904-4603-AB00-A7FE8C1FD266}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,7 +12,7 @@ namespace NewBankServer.Services
 
     public override Task<UserResponse> GetByCredential(UserCredential request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       if (db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId)) == null)
         throw new RpcException(new Status(StatusCode.PermissionDenied, "Session is invalid"));
 
@@ -23,7 +23,7 @@ namespace NewBankServer.Services
     }
     public override Task<UserResponse> GetByID(UserFilter request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       var data = db.Users.FirstOrDefault(p => p.ID == Guid.Parse(request.Id));
       if (data == null)
         throw new RpcException(new Status(StatusCode.NotFound, "User not found"));
@@ -32,7 +32,7 @@ namespace NewBankServer.Services
 
     public override Task<Users> GetByFilter(UserFilter request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       UserModel[] users = new UserModel[0];
       if (!string.IsNullOrEmpty(request.FirstName))
         users = db.Users.Where(p => p.FirstName == request.FirstName).ToArray();
@@ -54,7 +54,7 @@ namespace NewBankServer.Services
 
     public override Task<Users> GetUsers(Empty request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       var persons = new Users();
       var query = from p in db.Users
                   select UserModel.ConvertUser(p);
@@ -64,7 +64,7 @@ namespace NewBankServer.Services
 
     public override Task<Empty> Insert(User request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       db.Users.Add(UserModel.ConvertUser(request));
       db.SaveChanges();
       return Task.FromResult(new Empty());
@@ -72,7 +72,7 @@ namespace NewBankServer.Services
 
     public override Task<Empty> Update(User request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       db.Users.Update(UserModel.ConvertUser(request));
       db.SaveChanges();
       return Task.FromResult(new Empty());
@@ -80,7 +80,7 @@ namespace NewBankServer.Services
 
     public override Task<Empty> Delete(UserFilter request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       var person = db.Users.FirstOrDefault(p => p.ID == Guid.Parse(request.Id));
       if (person == null)
         throw new RpcException(new Status(StatusCode.InvalidArgument, "User not found"));

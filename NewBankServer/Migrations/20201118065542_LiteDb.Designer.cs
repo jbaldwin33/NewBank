@@ -8,7 +8,7 @@ using NewBankServer;
 
 namespace NewBankServer.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(SqlServerDbContext))]
     [Migration("20201118065542_LiteDb")]
     partial class LiteDb
     {

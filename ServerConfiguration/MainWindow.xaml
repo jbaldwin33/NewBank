@@ -15,8 +15,8 @@
       <Label Grid.Row="0" Content="Server Configuration" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="50"/>
       <StackPanel Grid.Row="1" Orientation="Vertical">
         <Label Content="Select a database provider"/>
-        <RadioButton Content="SQL Compact" IsChecked="{Binding UseSqlCe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <RadioButton Content="SQL Server" IsChecked="{Binding UseSqlServer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <RadioButton Content="SQLite" IsChecked="{Binding UseSqlite, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
       </StackPanel>
       <Button Grid.Row="2" Content="{Binding SaveLabel}" Command="{Binding SaveCommand}" Width="100"/>
     </Grid>

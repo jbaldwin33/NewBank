@@ -1,12 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyVersion>2020.5.0.0</AssemblyVersion>
+    <UserSecretsId>0f4a2571-3738-4769-b442-b93ee2b92c1c</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>C:\Users\Josh\VSProjects\NewBank\_debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>C:\Users\Josh\VSProjects\NewBank\_release\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,10 +48,10 @@
 
   <ItemGroup>
     <Reference Include="NewBankShared">
-      <HintPath>..\..\NewBankShared\NewBankShared\bin\Debug\netcoreapp3.1\NewBankShared.dll</HintPath>
+      <HintPath>..\DLLs\NewBankShared.dll</HintPath>
     </Reference>
     <Reference Include="ServerShared">
-      <HintPath>..\_debug\netcoreapp3.1\ServerShared.dll</HintPath>
+      <HintPath>..\DLLs\ServerShared.dll</HintPath>
     </Reference>
   </ItemGroup>
 

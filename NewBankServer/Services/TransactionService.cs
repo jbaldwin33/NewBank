@@ -13,7 +13,7 @@ namespace NewBankServer.Services
   {
     public async override Task<Empty> CreateTransaction(CreateTransactionRequest request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       await db.Transactions.AddAsync(TransactionModel.ConvertTransaction(request.Transaction));
       await db.SaveChangesAsync();
 
@@ -22,7 +22,7 @@ namespace NewBankServer.Services
 
     public async override Task GetAllUserTransactions(GetAllUserTransactionsRequest request, IServerStreamWriter<Transaction> responseStream, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       if (db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId)) == null)
         throw new RpcException(new Status(StatusCode.PermissionDenied, "Session is invalid"));
 
@@ -33,7 +33,7 @@ namespace NewBankServer.Services
 
     public override Task<Transactions> GetTransactionsByFilter(GetTransactionsByFilterRequest request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       if (db.Sessions.FirstOrDefault(s => s.ID == Guid.Parse(request.SessionId)) == null)
         throw new RpcException(new Status(StatusCode.PermissionDenied, "Session is invalid"));
 

@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Windows;
 using System.Xml.Serialization;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using ServerShared;
+using MVVMFramework.Localization;
 
 namespace ServerConfiguration
 {
   public class MainViewModel : ViewModelBase
   {
-    private static readonly string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ServerConfiguration.xml");
+    private static readonly string filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "NewBank", "database", "ServerConfiguration.xml");
     private bool useSqlite;
     private bool useSqlServer;
     private RelayCommand saveCommand;
@@ -51,6 +53,7 @@ namespace ServerConfiguration
     private void SaveCommandExecute()
     {
       var serializer = new XmlSerializer(typeof(ConfigurationModel));
+      Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "NewBank", "database"));
       var stream = File.Create(filename);
       var model = new ConfigurationModel
       {
@@ -58,6 +61,7 @@ namespace ServerConfiguration
         UseSqlServer = useSqlServer
       };
       serializer.Serialize(stream, model);
+      MessageBox.Show("Changes saved", new InformationTranslatable(), MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private bool SaveCommandCanExecute() => true;

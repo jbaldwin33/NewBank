@@ -13,7 +13,7 @@ namespace NewBankServer.Services
   {
     public override Task<SignUpResponse> SignUp(SignUpRequest request, ServerCallContext context)
     {
-      using var db = new AppDbContext();
+      using var db = new SqlServerDbContext();
       if (request.User == null)
         throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request.User)));
       if (request.Account == null)
